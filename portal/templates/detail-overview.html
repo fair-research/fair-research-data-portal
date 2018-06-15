@@ -1,0 +1,93 @@
+{%extends "detail-base.html"%}
+{% load static %}
+
+
+{%block headextras%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/detail-base.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/detail-overview.css' %}" />
+{%endblock%}
+
+{% block detail_body %}
+
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="card mt-4">
+      <div class="card-header">{{fields.title.value}}</div>
+      <div class="card-body">
+        <h3 class="text-center mb-5">General Info</h3>
+        <div class="column-content">
+
+
+          {% if fields.descriptions %}<h5>Description</h5>{%endif%}
+          {%for desc in fields.descriptions.data%}
+          <p>{{desc.value}}</p>
+          {%endfor%}
+          <h5>{{fields.dates.field_title}}</h5>
+          <p>
+              {% for date in fields.dates.data %}
+              {{date.date_type}} - {{date.value}} <br>
+              {% endfor %}
+          </p>
+
+          <h5>{{fields.filesystem.field_title}}</h5>
+          <p>{{fields.filesystem.data.value}}</p>
+
+          <h5>{{fields.maximum_file_size.field_title}}</h5>
+          <p>{{fields.maximum_file_size.data.value}}</p>
+
+          <h5>{{fields.organization.field_title}}</h5>
+          <p>{{fields.organization.data.value}}</p>
+
+          <h5>{{fields.contributors.field_title}}</h5>
+          <p>{%for contributor in fields.contributors.data%}
+              {{contributor.contributor_name}}{% if not forloop.last %};{%endif%}
+              {%endfor%}<br>
+          </p>
+
+          <h5>Resource Type</h5>
+          <p>{{fields.resource_type.data.value}}</p>
+
+          <h5>Formats</h5>
+          {% for format in fields.formats.data %}
+          <p>{{format.value}}</p>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+  </div>
+
+  {% for metadata in fields.metadata %}
+  <div class="col-md-12">
+    <div class="card mt-4">
+      <div class="card-header">{{fields.title.value}}</div>
+      <div class="card-body">
+        <h3 class="text-center mb-5">Field Metadata</h3>
+        <h2>{{metadata.name}}</h2>
+        <table class="table table-responsive">
+          <thead>
+            <tr>
+                {%for col in metadata.field_titles %}
+                <th scope="col">{{col}}</th>
+                {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in metadata.field_values %}
+            <tr>
+              {% for item in row %}
+              <td>{{item}}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

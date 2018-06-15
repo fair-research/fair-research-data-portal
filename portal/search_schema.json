@@ -1,0 +1,108 @@
+{
+  "fields": {
+    "identifier": {
+      "field_title": "Identifier"
+    },
+    "alternate_identifiers": {
+      "field_title": "Alternate identifiers"
+    },
+    "contributors": {
+      "field_title": "Contributors"
+    },
+    "creators": {
+      "field_title": "Creators"
+    },
+    "dates": {
+      "field_title": "Dates"
+    },
+    "descriptions": {
+      "field_title": "Descriptions"
+    },
+    "formats": {
+      "field_title": "Formats"
+    },
+    "funding_references": {
+      "field_title": "Funding references"
+    },
+    "geo_locations": {
+      "field_title": "Geo locations"
+    },
+    "language": {
+      "field_title": "Language"
+    },
+    "publication_year": {
+      "field_title": "Publication year"
+    },
+    "publisher": {
+      "field_title": "Publisher"
+    },
+    "related_identifiers": {
+      "field_title": "Related identifiers"
+    },
+    "resource_type": {
+      "field_title": "Resource type"
+    },
+    "rights_list": {
+      "field_title": "Rights list"
+    },
+    "sizes": {
+      "field_title": "Sizes"
+    },
+    "subjects": {
+      "field_title": "Subjects"
+    },
+    "titles": {
+      "field_title": "Titles"
+    },
+    "version": {
+      "field_title": "Version"
+    },
+    "filesystem": {
+      "field_title": "Filesystem"
+    },
+    "maximum_file_size": {
+      "field_title": "Maximum File Size"
+    },
+    "organization": {
+      "field_title": "Organization"
+    }
+  },
+  "facets": [{
+      "name": "Contributor",
+      "type": "terms",
+      "field_name": "perfdata.contributors.contributor_name",
+      "size": 10
+    },
+    {
+      "name": "Category",
+      "type": "terms",
+      "field_name": "perfdata.category.value",
+      "size": 10
+    },
+    {
+      "name": "Subjects",
+      "type": "terms",
+      "field_name": "perfdata.subjects.value",
+      "size": 10
+    },
+    {
+      "name": "Publication Year",
+      "type": "terms",
+      "field_name": "perfdata.publication_year.value",
+      "size": 10
+    },
+    {
+      "name": "Organization",
+      "type": "terms",
+      "field_name": "perfdata.organization.value",
+      "size": 10
+    },
+    {
+      "name": "Maximum File Size",
+      "type": "terms",
+      "field_name": "perfdata.maximum_file_size.value",
+      "size": 10
+    }
+  ],
+  "tabular": ["metadata"]
+}
