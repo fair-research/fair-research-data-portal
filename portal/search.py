@@ -3,7 +3,9 @@ import logging
 import django
 from django.conf import settings
 
-django.utils.autoreload._cached_filenames.append(settings.SEARCH_SCHEMA)
+# @HACK: Use this only for debugging. Remove when we move to models.
+if settings.DEBUG:
+    django.utils.autoreload._cached_filenames.append(settings.SEARCH_SCHEMA)
 
 log = logging.getLogger(__name__)
 
