@@ -4,33 +4,16 @@
   <div class="result-item">
 
     <h3 class="search-title mt-3">
-      <a href="{% url 'detail' result.subject %}" title="{{result.fields.title}}">{{result.fields.title.value}}</a>
+      <a href="{% url 'detail' result.subject %}" title="{{result.fields.title}}">{{result.fields.title.data}}</a>
     </h3>
 
     <div class="result-fields">
-      Description: {%for desc in result.fields.descriptions.data%}
-                      {{desc.value}}
-                      {%endfor%}<br>
-      {% if result.fields.filesystem %}
-      Filesystem: {{result.fields.filesystem.data.value}}<br>
-      {% endif %}
-      {% if result.fields.maximum_file_size %}
-      Maximum File Size: {{result.fields.maximum_file_size.data.value}}<br>
-      {% endif %}
-      {% if result.fields.organization %}
-      Organization: {{result.fields.organization.data.value}}<br>
-      {% endif %}
-      Date: {{result.fields.publication_year.data.value}}<br>
-      Contributors: {%for contributor in result.fields.contributors.data%}
-      {{contributor.contributor_name}}{% if not forloop.last %};{%endif%}
-      {%endfor%}<br>
-      Formats:
-      {% for format in result.fields.formats.data %}
-      <button class="btn btn-primary btn-sm ml-1 py-0" style="background-color: #337ab7">
-        {{format.value}}
-      </button>
-      {% endfor %}
-      <br>
+      Sample ID: {{result.fields.SAMPID.data}}<br>
+      Smoking Status: {{result.fields.SMOKING_STATUS.data}}<br>
+      Age: {{result.fields.AGE.data}}<br>
+      Sex: {{result.fields.SEX.data}}<br>
+      Forward Path: {{result.fields.Forward_path.data}}<br>
+      Reverse Path: {{result.fields.Reverse_path.data}}<br>
     </div>
 
   </div>

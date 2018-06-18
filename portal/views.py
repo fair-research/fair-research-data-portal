@@ -1,7 +1,9 @@
 import logging
 from django.shortcuts import render
+from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
+
 
 log = logging.getLogger(__name__)
 

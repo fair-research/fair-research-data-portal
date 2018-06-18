@@ -1,22 +1,26 @@
 
 import logging
+import django
 from django.conf import settings
-from globus_portal_framework import default_search_mapper
 
+django.utils.autoreload._cached_filenames.append(settings.SEARCH_SCHEMA)
 
 log = logging.getLogger(__name__)
+
+NAMESPACE = 'http://gtex.globuscs.info/meta/GTEx_v7.xsd#'
 
 
 # Configured in settings.py to be run by globus_portal_framework
 def general_mapper(entry, schema):
-    fields = default_search_mapper(entry, schema)
-    fields['metadata'] = entry[0].get('field_metadata')
-    fields['remote_file_manifest'] = entry[0].get('remote_file_manifest')
-    fields['globus_group'] = entry[0].get('globus_group')
 
+    denamespaced = {k.replace(NAMESPACE, ''): v for k, v in entry[0].items()}
+
+    fields = {k: {
+                       'field_title': schema[k].get('field_title', k),
+                       'data': v
+                  } for k, v in denamespaced.items() if schema.get(k)}
     if settings.DEBUG:
         debug_fields(entry, fields)
-
     return fields
 
 
@@ -32,7 +36,8 @@ def debug_fields(entry, fields):
             if isinstance(d.get('data'), dict):
                 field_info += '.data.(%s)' % ','.join(d['data'].keys())
         info.append(field_info)
-    log.debug('Mapped Fields for {}: \n{}'.format(fields['title']['value'],
-                                                  '\n\t'.join(info)))
-    ignored = [f for f in entry[0]['perfdata'] if f not in fields.keys()]
+    log.debug('Mapped Fields for {}: \n{}\n\t'.format('',
+                                                      '\n\t'.join(info)))
+    ignored = [f.replace(NAMESPACE, '[#]')
+               for f in entry[0] if f not in fields.keys()]
     log.debug('Search fields ignored: {}'.format(', '.join(ignored)))

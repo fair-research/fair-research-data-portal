@@ -30,25 +30,24 @@ DEBUG = True
 PROJECT_TITLE = 'FAIR Research Data Portal'
 
 # Perf data index for example only. Change to your index when you're ready
-SEARCH_INDEX = '5e83718e-add0-4f06-a00d-577dc78359bc'
+SEARCH_INDEX = '8246d288-add7-4f7f-b26a-4e551afba949'
 
 
-# This shouldn't be global, put in your search data instead!
-GLOBUS_HTTP_ENDPOINT = 'https://b4eab318-fc86-11e7-a5a9-0a448319c2f8' \
-                       '.petrel.host'
-# This shouldn't be global, put in your search data instead!
-PREVIEW_TOKEN_NAME = 'petrel_https_server'
+# # This shouldn't be global, put in your search data instead!
+# GLOBUS_HTTP_ENDPOINT = 'https://b4eab318-fc86-11e7-a5a9-0a448319c2f8' \
+#                        '.petrel.host'
+# # This shouldn't be global, put in your search data instead!
+# PREVIEW_TOKEN_NAME = 'petrel_https_server'
 
-
-SEARCH_SCHEMA = os.path.join(BASE_DIR,
-                             'portal/search_schema.json')
+SEARCH_ENTRY_FIELD_PATH = ''
+SEARCH_SCHEMA = os.path.join(BASE_DIR, 'portal/search_schema.json')
 SEARCH_MAPPER = ('portal.search', 'general_mapper')
 
 
 SOCIAL_AUTH_GLOBUS_SCOPE = [
     'urn:globus:auth:scope:search.api.globus.org:search',
     'urn:globus:auth:scope:transfer.api.globus.org:all',
-    'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'
+    # 'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'
 ]
 
 ALLOWED_HOSTS = []
@@ -115,7 +114,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'stream': {
-            'level': 'WARNING',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
         'null': {
