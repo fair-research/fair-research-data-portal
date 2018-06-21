@@ -21,8 +21,9 @@ def general_mapper(entry, schema):
                        'field_title': schema[k].get('field_title', k),
                        'data': v
                   } for k, v in denamespaced.items() if schema.get(k)}
-    if settings.DEBUG:
-        debug_fields(entry, fields)
+
+    # if settings.DEBUG:
+    #     debug_fields(entry, fields)
     return fields
 
 

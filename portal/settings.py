@@ -33,11 +33,24 @@ PROJECT_TITLE = 'FAIR Research Data Portal'
 SEARCH_INDEX = '8246d288-add7-4f7f-b26a-4e551afba949'
 
 
-# # This shouldn't be global, put in your search data instead!
-# GLOBUS_HTTP_ENDPOINT = 'https://b4eab318-fc86-11e7-a5a9-0a448319c2f8' \
-#                        '.petrel.host'
-# # This shouldn't be global, put in your search data instead!
-# PREVIEW_TOKEN_NAME = 'petrel_https_server'
+def generate_fake_manifests(var):
+    return [{
+        'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
+        'length': 2000000,
+        'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
+        'filename': os.path.basename(
+            var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'])
+    }, {
+        'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'],
+        'length': 2000000,
+        'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
+        'filename': os.path.basename(
+            var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'])
+        }]
+
+ENTRY_SERVICE_VARS = {
+    'remote_file_manifest': generate_fake_manifests,
+}
 
 SEARCH_ENTRY_FIELD_PATH = ''
 SEARCH_SCHEMA = os.path.join(BASE_DIR, 'portal/search_schema.json')
@@ -67,6 +80,7 @@ INSTALLED_APPS = [
     # This contains a search portal we will use for this demo
     'globus_portal_framework.search',
     'social_django',
+    'portal',  # Added explicitly here only for Django admin autodiscovery
 ]
 
 MIDDLEWARE = [
