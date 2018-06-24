@@ -1,0 +1,7 @@
+<li>Name: {{wk.name}}</li>
+{% for minid in wk.input.all %}
+<li>Inputs: {{minid.id}}</li>
+{% endfor %}
+<li>Outputs: {{wk.output}}</li>
+
+<li>Data: {{wk.data}}</li>

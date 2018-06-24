@@ -9,6 +9,10 @@ from globus_portal_framework.search.models import Minid
 
 from concierge.api import create_bag
 
+from portal.models import Workflow
+
+from portal.workflow import WORKFLOW_TASK_NAMES
+
 
 log = logging.getLogger(__name__)
 
@@ -60,4 +64,31 @@ def bag_create(request):
         minid.save()
         messages.info(request, 'Your bag {} has been created with {} files.'
                       ''.format(minid.id, len(manifests)))
-        return redirect('bag-list')
+        return redirect('bag-list.html')
+
+
+def tasks(request):
+    if request.method == 'POST':
+        log.debug(request.POST)
+        tid = request.POST.get('id')
+        task = Workflow.objects.get(id=tid)
+        if task.user != request.user:
+            messages.warning(request, 'Naughtiness detected, please don\'t '
+                                      'try that again.')
+            log.warning('User edited task not theirs {} --> {}'
+                        .format(request.user, task))
+        task.task.start()
+        messages.info('Started task')
+        return redirect('workflows')
+
+
+def workflows(request):
+    context = {'bags': Minid.objects.filter(user=request.user),
+               'workflows': Workflow.objects.filter(user=request.user),
+               'workflow_categories':
+                   [
+                    {'value': val, 'name': name}
+                    for val, name in WORKFLOW_TASK_NAMES.items()
+                    ]
+               }
+    return render(request, 'workflows.html', context)
