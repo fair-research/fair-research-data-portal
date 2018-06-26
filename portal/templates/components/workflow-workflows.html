@@ -20,8 +20,8 @@
     <li class="list-group-item">
     <div class="row">
       <div class="col-3">Task Name</div>
-      <div class="col-3">Description</div>
       <div class="col-3">Input Files</div>
+      <div class="col-3">Output Files</div>
       <div class="col-3">Status</div>
       <!--<div class="col-3"></div>-->
     </div>
@@ -33,10 +33,10 @@
         {{task.name}}
       </div>
       <div class="col-3">
-        {{task.description}}
+        {{task.input.all.first.description}}
       </div>
       <div class="col-3">
-        {{task.input.all.first.description}}
+        {{task.output.all.first.description}}
       </div>
       <div class="col-3">
         {{task.status}}

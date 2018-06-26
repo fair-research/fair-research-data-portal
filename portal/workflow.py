@@ -1,8 +1,10 @@
 
 import logging
+import requests
 from concierge.api import stage_bag
 
-from globus_portal_framework import load_globus_access_token
+from globus_portal_framework import (load_globus_access_token,
+                                     load_transfer_client)
 
 from portal.globus_genomics import submit_job, check_status
 
@@ -144,4 +146,16 @@ class JupyterhubTask(Task):
             minid = input[0]
             self.data = stage_bag(minid.id, self.STAGING_EP, at, 'test',
                                   transfer_token=tt)
+            self.status = TASK_RUNNING
             return
+
+    def info(self):
+        if self.status == TASK_RUNNING:
+            update = requests.get(self.data['url']).json()
+            # log.debug(update.json())
+            taskids = update.get('transfer_task_ids')
+            tc = load_transfer_client(self.task.user)
+            task_infos = [tc.get_task(t) for t in taskids]
+            statuses = [t['status'] for t in task_infos]
+            if all([s == 'SUCCEEDED' for s in statuses]):
+                self.status = TASK_COMPLETE

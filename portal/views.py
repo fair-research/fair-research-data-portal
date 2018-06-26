@@ -153,7 +153,9 @@ def tasks(request):
             log.debug('User {} started task {}'.format(request.user, task))
             task.task.start()
             messages.info(request, 'Started task: {}'.format(task.name))
-        return redirect('workflows')
+    else:
+        log.error(request.method)
+    return redirect('workflows')
 
 
 def workflows(request):
