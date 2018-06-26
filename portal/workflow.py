@@ -120,7 +120,6 @@ class GlobusGenomicsTask(Task):
 
                 data = self.data
                 data['status'] = check_status(self.data['apikey'], hist_id)
-                log.debug('DATA {} '.format(data))
                 self.data = data
                 return data['status']
         except Exception as e:
