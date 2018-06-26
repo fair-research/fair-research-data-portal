@@ -5,7 +5,6 @@
 
 {%block headextras%}
   <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
-  <!--<link rel="stylesheet" type="text/css" href="{% static 'css/detail-base.css' %}" />-->
 {%endblock%}
 
 
@@ -19,103 +18,37 @@
 
 
 <div class="row mt-5">
-  <div class="col"></div>
 
-  <div class="col-3">
-
-    <div class="card">
-        <div class="card-header">
-          <h2>Bags</h2>
-        </div>
-
-        <div class="card-body">
-            <div class="container">
-              <h5>Your bags</h5>
-              <ul>
-                {% for bag in bags %}
-                <li>{{bag.id}}</li>
-                {% endfor %}
-              </ul>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <div class="container">
-            </div>
-        </div>
-    </div>
-
+  <div class="col-4 ml-4">
+    {% include 'components/workflow-bags.html' %}
   </div>
 
   <div class="col-7">
-
-
-              <div class="card">
-                <div class="card-header">
-                  <h2>Workflow</h2>
-                </div>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">
-                  <div class="row">
-                    <div class="col-3">Task Name</div>
-                    <div class="col-3">Description</div>
-                    <div class="col-3">Input Files</div>
-                    <div class="col-1">Status</div>
-                    <div class="col-1"></div>
-                  </div>
-                </li>
-                {% for wk in workflows %}
-                <li class="list-group-item">
-                  <div class="row">
-                    <div class="col-3">
-                      Stage files to Jupyterhub
-                    </div>
-                    <div class="col-3">
-                      {{wk.description}}
-                    </div>
-                    <div class="col-3">
-                      {{wk.input.all.first.description}}
-                    </div>
-                    <div class="col-1">
-                      {{wk.status}}
-                    </div>
-                    <div class="col-1">
-                      <form id="task-form" action="{% url 'tasks' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">
-                        <input type="submit" value="Start Task"/>
-                      </form>
-                    </div>
-                  </div>
-                </li>
-                {% endfor %}
-                </ul>
-              </div>
-
+    {% include 'components/workflow-info.html' %}
   </div>
   <div class="col"></div>
 </div>
 
-<div class="row mt-5">
+
+{% for workflow in workflows %}
+
+<div class="row my-5">
   <div class="col"></div>
   <div class="col-10">
-    <div class="card">
-      <div class="card-header">
-        <h2>Create new Workflow</h2>
-      </div>
-      <div class="card-body">
-        <form id="workflow-form" action="{% url 'workflows' %}" method="post">
-          {% csrf_token %}
-          <select>
-            {% for cat in workflow_categories %}
-            <option value="{{cat.value}}">{{cat.name}}</option>
-            {% endfor %}
-          </select>
+    {% include 'components/workflow-workflows.html' %}
+  </div>
+  <div class="col"></div>
+</div>
 
-          <input type="submit" value="Create Workspace"/>
-        </form>
-      </div>
-    </div>
+{% endfor %}
+
+<hr>
+
+
+<div class="row my-5">
+  <div class="col"></div>
+  <div class="col-10">
+    {% include 'components/workflow-create.html' %}
   </div>
   <div class="col"></div>
 

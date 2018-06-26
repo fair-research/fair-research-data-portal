@@ -1,0 +1,25 @@
+  {% for wk in workflows %}
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-3">
+        {{wk.name}}
+      </div>
+      <div class="col-3">
+        {{wk.description}}
+      </div>
+      <div class="col-3">
+        {{wk.input.all.first.description}}
+      </div>
+      <div class="col-3">
+        {{wk.status}}
+      </div>
+      <!--<div class="col-1">-->
+        <!--<form id="task-form" action="{% url 'tasks' %}" method="post">-->
+          <!--{% csrf_token %}-->
+          <!--<input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">-->
+          <!--<input type="submit" value="Start Task"/>-->
+        <!--</form>-->
+      <!--</div>-->
+    </div>
+  </li>
+  {% endfor %}

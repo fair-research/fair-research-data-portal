@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Create new Globus Genomics Workflow</h2>
+  </div>
+  <div class="card-body">
+
+    {% if not profile.globus_genomics_apikey %}
+    <div class="alert alert-warning" role="alert">
+      You don't have an API key set, which is needed to run your workflows. You can set an
+      API key <a href="{% url 'profile' %}">here</a>.
+    </div>
+    {% endif %}
+
+    <form id="workflow-form" action="{% url 'workflows' %}" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <select class="custom-select" id="bagInputSelect" name="input-bag">
+          <option selected>Select an input Bag</option>
+          {% for bag in bags %}
+          <option value="{{bag.id}}">{{bag.description}} - {{bag.id}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!--<div class="form-group">-->
+        <!--<select class="custom-select" id="bagOutputSelect" name="output-location">-->
+          <!--<option selected>Select a Destination</option>-->
+          <!--<option name="output-location" value="Jupyterhub">Jupyterhub</option>-->
+        <!--</select>-->
+      <!--</div>-->
+      <button type="submit" class="btn btn-primary">Create Workspace</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+{%extends "base.html"%}
+{% load static %}
+
+{%block title%}My Bags{%endblock%}
+
+{%block headextras%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+{%endblock%}
+
+
+{%block body%}
+
+{%block detail_messages %}
+<div class="container my-3">
+    {%include "components/messages.html"%}
+</div>
+{%endblock%}
+
+
+<div class="row mt-5">
+  <div class="col"></div>
+  <div class="col-10">
+    <div class="card">
+      <div class="card-header">
+        <h2>Create new Workflow</h2>
+      </div>
+      <div class="card-body">
+        <form id="workflow-form" action="{% url 'profile' %}" method="post">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="api-key">Globus Genomics API Key</label>
+            <input type="text" class="form-control" id="api-key" name="apikey" value="{{profile.globus_genomics_apikey}}" aria-describedby="api-help" placeholder="Enter API Key ">
+            <small id="api-help" class="form-text text-muted">You can generate an API key <a target="_blank" href="https://nihcommons.globusgenomics.org/user/api_key">here</a>.</small>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col"></div>
+</div>
+
+{%endblock%}

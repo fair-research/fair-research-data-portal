@@ -1,0 +1,77 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-6">
+        <h2>{{workflow.name}}</h2>
+      </div>
+      <div class="col-5"></div>
+      <div class="col-1">
+        <form method="post" action="{% url 'workflow-delete' %}">
+        {% csrf_token %}
+        <input type="hidden" id="{{workflow.id}}" name="id" value="{{workflow.id}}">
+        <button type="submit" class="btn btn-secondary">
+            <i class="fa fa-trash "></i>
+        </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+    <div class="row">
+      <div class="col-3">Task Name</div>
+      <div class="col-3">Description</div>
+      <div class="col-3">Input Files</div>
+      <div class="col-3">Status</div>
+      <!--<div class="col-3"></div>-->
+    </div>
+  </li>
+  {% for task in workflow.tasks %}
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-3">
+        {{task.name}}
+      </div>
+      <div class="col-3">
+        {{task.description}}
+      </div>
+      <div class="col-3">
+        {{task.input.all.first.description}}
+      </div>
+      <div class="col-3">
+        {{task.status}}
+      </div>
+      <!--<div class="col-1">-->
+        <!--<form id="task-form" action="{% url 'tasks' %}" method="post">-->
+          <!--{% csrf_token %}-->
+          <!--<input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">-->
+          <!--<input type="submit" value="Start Task"/>-->
+        <!--</form>-->
+      <!--</div>-->
+    </div>
+  </li>
+  {% endfor %}
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-9"></div>
+      <div class="col-1">
+        <form id="task-form" action="{% url 'tasks' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="task-{{workflow.tasks.first.id}}" name="id" value="{{workflow.tasks.first.id}}">
+          <input type="submit" value="Start Task"/>
+        </form>
+      </div>
+    </div>
+  </li>
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-9">
+        {{workflow.tasks.first.info}}
+      </div>
+    </div>
+  </li>
+  </ul>
+
+
+
+</div>

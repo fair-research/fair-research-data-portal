@@ -1,38 +1,47 @@
 
+import logging
 from concierge.api import stage_bag
 
 from globus_portal_framework import load_globus_access_token
 
+from portal.globus_genomics import submit_job, check_status
 
-WORKFLOW_GLOBUS_GENOMICS = 'GLOBUS_GENOMICS'
-WORKFLOW_JUPYTERHUB = 'JUPYTERHUB'
-
-WORKFLOW_READY = 'READY'
-WORKFLOW_RUNNING = 'RUNNING'
-WORKFLOW_COMPLETE = 'COMPLETE'
+log = logging.getLogger(__name__)
 
 
-WORKFLOW_TASK_NAMES = {
-    WORKFLOW_GLOBUS_GENOMICS: 'Globus Genomics',
-    WORKFLOW_JUPYTERHUB: 'Jupyterhub'
+TASK_GLOBUS_GENOMICS = 'GLOBUS_GENOMICS'
+TASK_JUPYTERHUB = 'JUPYTERHUB'
+
+TASK_WAITING = 'WAITING'
+TASK_READY = 'READY'
+TASK_RUNNING = 'RUNNING'
+TASK_COMPLETE = 'COMPLETE'
+TASK_ERROR = 'ERROR'
+
+
+TASK_TASK_NAMES = {
+    TASK_GLOBUS_GENOMICS: 'Globus Genomics',
+    TASK_JUPYTERHUB: 'Jupyterhub'
 }
 
-WORKFLOW_STATUS_NAMES = {
-    WORKFLOW_READY: 'Ready',
-    WORKFLOW_RUNNING: 'Running',
-    WORKFLOW_COMPLETE: 'Complete'
+TASK_STATUS_NAMES = {
+    TASK_WAITING: 'Waiting',
+    TASK_READY: 'Ready',
+    TASK_RUNNING: 'Running',
+    TASK_COMPLETE: 'Complete',
+    TASK_ERROR: 'Error'
 }
 
 
 def resolve_task(task_model):
     CLASSES = {
-        WORKFLOW_GLOBUS_GENOMICS: GlobusGenomicsTask,
-        WORKFLOW_JUPYTERHUB: JupyterhubTask
+        TASK_GLOBUS_GENOMICS: GlobusGenomicsTask,
+        TASK_JUPYTERHUB: JupyterhubTask
     }
     return CLASSES[task_model.category](task_model)
 
 
-class WorkflowException(Exception):
+class TaskException(Exception):
     def __init__(self, code='', message=''):
         """
         :param code: A short string that can be checked against, such as
@@ -68,9 +77,14 @@ class Task:
     def status(self):
         return self.task.status
 
+    @status.setter
+    def status(self, value):
+        self.task.status = value
+        self.task.save()
+
     @property
     def data(self):
-        return task.data
+        return self.task.data
 
     @data.setter
     def data(self, value):
@@ -79,7 +93,40 @@ class Task:
 
 
 class GlobusGenomicsTask(Task):
-    pass
+
+    WORKFLOW_ID = 'ark:/57799/b9x70v'
+
+    def start(self):
+        if self.status == TASK_READY:
+            input = self.task.input.all().first()
+            data = self.data
+            data['job'] = submit_job(input.id, self.WORKFLOW_ID,
+                                     api_key=data['apikey'])
+            self.data = data
+            log.debug(self.data)
+            if not self.data['job'].get('history_id'):
+                raise TaskException('ggtaskstartfail',
+                                    'No history id returned on start')
+            self.status = TASK_RUNNING
+            return
+
+    def info(self):
+        try:
+            if self.status == TASK_RUNNING:
+
+                hist_id = self.data['job'].get('history_id')
+                if not hist_id:
+                    return
+
+                data = self.data
+                data['status'] = check_status(self.data['apikey'], hist_id)
+                log.debug('DATA {} '.format(data))
+                self.data = data
+                return data['status']
+        except Exception as e:
+            # raise TaskException('Unexpected Error', str(e))
+            log.error('User {} had error with task {}'.format(self.task.user,
+                                                              self.task.id))
 
 
 class JupyterhubTask(Task):
@@ -87,13 +134,13 @@ class JupyterhubTask(Task):
     STAGING_EP = '5abdf86e-8f4e-11e7-aa27-22000a92523b'
 
     def start(self):
-        if self.status == WORKFLOW_READY:
+        if self.status == TASK_READY:
             at = load_globus_access_token(self.task.user, 'auth.globus.org')
             tt = load_globus_access_token(self.task.user,
                                           'transfer.api.globus.org')
             input = self.task.input.all()
             if len(input) > 1:
-                raise WorkflowException('badinput', 'More than one Minid '
+                raise TaskException('badinput', 'More than one Minid '
                                         'given for staging')
             minid = input[0]
             self.data = stage_bag(minid.id, self.STAGING_EP, at, 'test',

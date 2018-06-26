@@ -1,0 +1,52 @@
+<div class="card">
+    <div class="card-header">
+      <h2>Bags</h2>
+    </div>
+
+    <div class="card-body">
+        <div class="container">
+          <h5>Your Minids pointing to BDBags</h5>
+          <ul class="list-group list-group-flush">
+            {% for bag in bags %}
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-6">
+                  <a href="http://minid.bd2k.org/minid/landingpage/{{bag.id}}">{{bag.id}}</a>
+                </div>
+                <div class="col-4">{{bag.description}}</div>
+                <div class="col-2">
+                  <form method="post" action="{% url 'bag-delete' bag.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-secondary">
+                      <i class="fa fa-trash "></i>
+                  </button>
+                  </form>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+            <li class="list-group-item">
+              <form action="{% url 'bag-add' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                  <label for="inputAddMinid" class="col-sm-4 col-form-label">Add Minid</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control" id="inputAddMinid" name="minid" placeholder="ark:/88120/r8059v">
+                  </div>
+                  <div class="col-sm-2">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="container">
+        </div>
+    </div>
+</div>

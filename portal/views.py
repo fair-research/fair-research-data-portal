@@ -1,17 +1,24 @@
+from datetime import datetime
 import logging
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
 
+from minid_client import minid_client_api
+
+
 from globus_portal_framework.search import views as gpf_search_views
-from globus_portal_framework.search.models import Minid
+from globus_portal_framework.search.models import Minid, MINID_BDBAG
+
 
 from concierge.api import create_bag
 
-from portal.models import Workflow
+from portal.models import Task, Workflow, Profile
 
-from portal.workflow import WORKFLOW_TASK_NAMES
+from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
+                             TASK_JUPYTERHUB, TASK_READY,
+                             TASK_WAITING)
 
 
 log = logging.getLogger(__name__)
@@ -66,29 +73,121 @@ def bag_create(request):
                       ''.format(minid.id, len(manifests)))
         return redirect('bag-list.html')
 
+def bag_add(request):
+    if request.method == 'POST':
+        minid = request.POST.get('minid')
+        if minid:
+            r = minid_client_api.get_entities('http://minid.bd2k.org/minid',
+                                          minid,
+                                          False)
+            if not r.get(minid):
+                messages.error(request, 'Could not find your minid.')
+                return redirect('workflows')
+
+            if Minid.objects.filter(id=minid, user=request.user):
+                messages.info(request, 'Your minid has already been added.')
+                return redirect('workflows')
+
+
+            t = r[minid].get('titles')
+            if t:
+                t = t[0]['title']
+            else:
+                t = r.get('creator')
+            new_minid = Minid(id=minid, user=request.user,
+                              category=MINID_BDBAG, description=t)
+            new_minid.save()
+            messages.info(request, '"{}" has been added.'.format(t))
+            log.debug('User {} added a new bag {}'.format(request.user,
+                                                          new_minid))
+    return redirect('workflows')
+
+
+def bag_delete(request, minid):
+    log.debug('User {} request to delete: {}'.format(request.user, minid))
+    m = Minid.objects.filter(user=request.user, id=minid)
+    if m:
+        m.delete()
+    else:
+        messages.warning(request, '{} does not appear to be a valid minid.')
+        log.warning('{} tried to delete {}'.format(request.user, minid))
+    return redirect('workflows')
+
+
+def profile(request):
+    p = Profile.objects.filter(user=request.user).first()
+    if request.method == 'POST':
+        key = request.POST.get('apikey')
+
+        if key:
+            if not p:
+                p = Profile(user=request.user, globus_genomics_apikey=key)
+            p.save()
+            messages.info(request, 'Your API key has been set.')
+        else:
+            messages.warning(request, 'Please enter your key.')
+
+    context = {'profile': p}
+    return render(request, 'profile.html', context)
+
+
+def workflow_delete(request):
+    if request.method == 'POST':
+        r = Workflow.objects.filter(id=request.POST.get('id'),
+                                    user=request.user).first()
+        if r:
+            r.delete()
+            messages.info(request, 'Your workspace has been deleted')
+    return redirect('workflows')
+
 
 def tasks(request):
     if request.method == 'POST':
-        log.debug(request.POST)
         tid = request.POST.get('id')
-        task = Workflow.objects.get(id=tid)
-        if task.user != request.user:
-            messages.warning(request, 'Naughtiness detected, please don\'t '
-                                      'try that again.')
-            log.warning('User edited task not theirs {} --> {}'
-                        .format(request.user, task))
-        task.task.start()
-        messages.info('Started task')
+        task = Task.objects.filter(id=tid, user=request.user).first()
+        if not task:
+            messages.warning(request, 'There was an error starting your task')
+            log.error('Could not find task {} for user {}'.format(
+                tid, request.user))
+        else:
+            log.debug('User {} started task {}'.format(request.user, task))
+            task.task.start()
+            messages.info(request, 'Started task: {}'.format(task.name))
         return redirect('workflows')
 
 
 def workflows(request):
+    if request.method == 'POST':
+        input = request.POST.get('input-bag')
+        minid = None
+        if input:
+            minid = Minid.objects.filter(id=input, user=request.user).first()
+        if not minid:
+            messages.error(request, 'Could not find minid: {}'.format(minid))
+        else:
+            p = Profile.objects.filter(user=request.user).first()
+            if not p:
+                return redirect('profile')
+            workflow = Workflow(user=request.user, name='Workflow with {}'
+                                ''.format(minid.description))
+            workflow.save()
+            gg = Task(name='Globus Genomics',
+                      workflow=workflow,
+                      user=request.user,
+                      category=TASK_GLOBUS_GENOMICS,
+                      status=TASK_READY)
+            gg.data = {'apikey': p.globus_genomics_apikey}
+            gg.save()
+            gg.input.add(minid)
+
+
     context = {'bags': Minid.objects.filter(user=request.user),
                'workflows': Workflow.objects.filter(user=request.user),
-               'workflow_categories':
-                   [
-                    {'value': val, 'name': name}
-                    for val, name in WORKFLOW_TASK_NAMES.items()
-                    ]
+               'profile': Profile.objects.filter(user=request.user).first(),
+               # 'workflow_categories':
+               #     [
+               #      {'value': val, 'name': name}
+               #      for val, name in TASK_TASK_NAMES.items()
+               #      ]
                }
     return render(request, 'workflows.html', context)
