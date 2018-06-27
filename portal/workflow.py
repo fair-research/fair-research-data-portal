@@ -137,6 +137,7 @@ class GlobusGenomicsTask(Task):
             # raise TaskException('Unexpected Error', str(e))
             log.error('User {} had error with task {}'.format(self.task.user,
                                                               self.task.id))
+            self.status = TASK_ERROR
 
 
 class JupyterhubTask(Task):
@@ -153,9 +154,12 @@ class JupyterhubTask(Task):
                 raise TaskException('badinput', 'More than one Minid '
                                         'given for staging')
             minid = input[0]
-            self.data = stage_bag(minid.id, self.STAGING_EP, at, 'test',
-                                  transfer_token=tt)
-            self.status = TASK_RUNNING
+            # self.data = stage_bag(minid.id, self.STAGING_EP, at, 'test',
+            #                       transfer_token=tt)
+            # self.status = TASK_RUNNING
+            self.data = {'error': 'Jupyterhub is not running.'}
+            self.status = TASK_ERROR
+
             return
 
     def info(self):
