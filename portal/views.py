@@ -78,7 +78,7 @@ def bag_add(request):
     if request.method == 'POST':
         minid = request.POST.get('minid')
 
-        m = Minid.objects.filter(id=minid, user=request.user).first()
+        m = Minid.objects.filter(id=minid, users=request.user).first()
         if m:
             messages.info(request, 'Your minid has already been added.')
         else:
@@ -157,7 +157,7 @@ def workflows(request):
         input = request.POST.get('input-bag')
         minid = None
         if input:
-            minid = Minid.objects.filter(id=input, user=request.user).first()
+            minid = Minid.objects.filter(id=input, users=request.user).first()
         if not minid:
             messages.error(request, 'Could not find minid: {}'.format(minid))
         else:
@@ -184,7 +184,7 @@ def workflows(request):
 
 
     active_tasks = [{'id':t.id} for t in Task.objects.filter(user=request.user)]
-    context = {'bags': Minid.objects.filter(user=request.user),
+    context = {'bags': Minid.objects.filter(users=request.user),
                'workflows': Workflow.objects.filter(user=request.user),
                'profile': Profile.objects.filter(user=request.user).first(),
                'active_tasks': json.dumps(active_tasks)

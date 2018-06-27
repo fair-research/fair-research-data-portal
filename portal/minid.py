@@ -14,7 +14,7 @@ def add_minid(user, minid):
         t = t[0]['title']
     else:
         t = r.get('creator')
-    new_minid = Minid(id=minid, user=user,
-                      category=MINID_BDBAG, description=t)
+    new_minid = Minid(id=minid, category=MINID_BDBAG, description=t)
     new_minid.save()
+    new_minid.users.add(user)
     return new_minid
