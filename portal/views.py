@@ -92,9 +92,9 @@ def bag_add(request):
 
 def bag_delete(request, minid):
     log.debug('User {} request to delete: {}'.format(request.user, minid))
-    m = Minid.objects.filter(user=request.user, id=minid)
+    m = Minid.objects.filter(users=request.user, id=minid).first()
     if m:
-        m.delete()
+        m.users.remove(request.user)
     else:
         messages.warning(request, '{} does not appear to be a valid minid.')
         log.warning('{} tried to delete {}'.format(request.user, minid))
