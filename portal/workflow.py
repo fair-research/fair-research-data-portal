@@ -123,11 +123,12 @@ class GlobusGenomicsTask(Task):
 
                 data = self.data
                 data['status'] = check_status(self.data['apikey'], hist_id)
+                # log.debug(data['status'])
                 self.data = data
-                if data.get('minid'):
+                if data['status'].get('minid'):
                     try:
-                        minid = add_minid(self.task.user, data['minid'])
-                        self.output.add(minid)
+                        minid = add_minid(self.task.user, data['status']['minid'])
+                        self.task.output.add(minid)
                         self.status = TASK_COMPLETE
                     except Exception as e:
                         log.error('{}: {}'.format(self.task.user, e))

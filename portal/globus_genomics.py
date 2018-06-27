@@ -144,21 +144,24 @@ def submit_job(input_minid, wf_minid, api_key=None):
 def check_status(api_key, history_id):
     gi = GalaxyInstance(URL, api_key, history_id)
 
-    state = gi.histories.show_history(history_id, contents=False)['state']
+    status = {}
+    status['history'] = gi.histories.show_history(history_id, contents=False)
+    status['state'] = status['history']['state']
+    state = status['state']
     minid = None
     if state == 'ok':
         for content in gi.histories.show_history(history_id, contents=True):
             if "Minid for history" in content['name'] and content[
                 'visible'] is True and content['deleted'] is False:
                 id = content['id']
-                dataset = gi.datasets.show_dataset(id)
-                minid = dataset_content['peek'].split("\t")[-1].split("<")[0]
-                print(
-                    "Your workflow is complete\nYour output MINID is: %s" % minid)
-                return {'minid': minid,
-                        'dataset': dataset}
+                status['dataset'] = gi.datasets.show_dataset(id)
+                #dataset = gi.datasets.show_dataset(id)
+                status['minid'] = status['dataset']['peek'].split("\t")[-1].split("<")[0]
+                # print("Your workflow is complete\nYour output MINID is: %s" % minid)
     elif state == 'error':
         raise Exception('Error running workflow')
+
+    return status
 
     # else:
     #     print("Workflow running: %s" % (
