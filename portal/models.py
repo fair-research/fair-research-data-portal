@@ -51,8 +51,8 @@ class Task(models.Model):
     def data(self, value):
         self.data_store = json.dumps(value) if value else json.dumps({})
 
-    @property
-    def info(self):
+
+    def update(self):
         try:
             return resolve_task(self).info()
         except TaskException as te:
@@ -60,7 +60,15 @@ class Task(models.Model):
             self.status = TASK_ERROR
             self.save()
 
-    @property
+    # @property
+    # def info(self):
+    #     try:
+    #         return resolve_task(self).info()
+    #     except TaskException as te:
+    #         log.error(te)
+    #         self.status = TASK_ERROR
+    #         self.save()
+
     def start(self):
         try:
             return resolve_task(self).start()

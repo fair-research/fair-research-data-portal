@@ -2,15 +2,26 @@ from django.urls import path, include, re_path
 from django.contrib import admin
 
 from portal.views import (landing_page, bag_create, workflows, tasks,
-                          bag_delete, bag_add, workflow_delete, profile)
+                          bag_delete, bag_add, workflow_delete, profile,
+                          task_detail)
+
+from portal.api import task_start, update_tasks
+
+apipatterns = [
+    path('task/start/', task_start, name='task-start'),
+    path('tasks/update/', update_tasks, name='tasks-update'),
+    # path('tasks/active', get_running_tasks, name='tasks-active')
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
+    path('api/v1/', include(apipatterns)),
     path('profile/', profile, name='profile'),
     path('workflows', workflows, name='workflows'),
     path('workflow/delete', workflow_delete, name='workflow-delete'),
+    path('task/<int:task>/', task_detail, name='task'),
     path('tasks', tasks, name='tasks'),
     path('search/bags/create/', bag_create, name='bag-create'),
     path('search/bags/delete/<path:minid>/', bag_delete, name='bag-delete'),

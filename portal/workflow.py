@@ -7,6 +7,7 @@ from globus_portal_framework import (load_globus_access_token,
                                      load_transfer_client)
 
 from portal.globus_genomics import submit_job, check_status
+from portal.minid import add_minid
 
 log = logging.getLogger(__name__)
 
@@ -123,6 +124,14 @@ class GlobusGenomicsTask(Task):
                 data = self.data
                 data['status'] = check_status(self.data['apikey'], hist_id)
                 self.data = data
+                if data.get('minid'):
+                    try:
+                        minid = add_minid(self.task.user, data['minid'])
+                        self.output.add(minid)
+                        self.status = TASK_COMPLETE
+                    except Exception as e:
+                        log.error('{}: {}'.format(self.task.user, e))
+                        self.status = TASK_ERROR
                 return data['status']
         except Exception as e:
             # raise TaskException('Unexpected Error', str(e))

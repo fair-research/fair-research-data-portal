@@ -147,19 +147,19 @@ def check_status(api_key, history_id):
     state = gi.histories.show_history(history_id, contents=False)['state']
     minid = None
     if state == 'ok':
-        for content in gi.histories.show_history(history['id'], contents=True):
+        for content in gi.histories.show_history(history_id, contents=True):
             if "Minid for history" in content['name'] and content[
                 'visible'] is True and content['deleted'] is False:
                 id = content['id']
-                dataset_content = gi.datasets.show_dataset(id)['peek']
-                minid = dataset_content.split("\t")[-1].split("<")[0]
+                dataset = gi.datasets.show_dataset(id)
+                minid = dataset_content['peek'].split("\t")[-1].split("<")[0]
                 print(
                     "Your workflow is complete\nYour output MINID is: %s" % minid)
-                break
+                return {'minid': minid,
+                        'dataset': dataset}
     elif state == 'error':
         raise Exception('Error running workflow')
 
-    return minid
     # else:
     #     print("Workflow running: %s" % (
     #     time.strftime("%a_%b_%d_%Y_%-I:%M:%S_%p", time.localtime(time.time()))))

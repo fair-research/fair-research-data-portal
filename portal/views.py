@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
+import json
 
 from minid_client import minid_client_api
 
@@ -15,10 +16,10 @@ from globus_portal_framework.search.models import Minid, MINID_BDBAG
 from concierge.api import create_bag
 
 from portal.models import Task, Workflow, Profile
-
 from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
                              TASK_JUPYTERHUB, TASK_READY,
-                             TASK_WAITING)
+                             TASK_WAITING, TASK_RUNNING)
+from portal.minid import add_minid
 
 
 log = logging.getLogger(__name__)
@@ -76,30 +77,16 @@ def bag_create(request):
 def bag_add(request):
     if request.method == 'POST':
         minid = request.POST.get('minid')
-        if minid:
-            r = minid_client_api.get_entities('http://minid.bd2k.org/minid',
-                                          minid,
-                                          False)
-            if not r.get(minid):
-                messages.error(request, 'Could not find your minid.')
-                return redirect('workflows')
 
-            if Minid.objects.filter(id=minid, user=request.user):
-                messages.info(request, 'Your minid has already been added.')
-                return redirect('workflows')
-
-
-            t = r[minid].get('titles')
-            if t:
-                t = t[0]['title']
-            else:
-                t = r.get('creator')
-            new_minid = Minid(id=minid, user=request.user,
-                              category=MINID_BDBAG, description=t)
-            new_minid.save()
-            messages.info(request, '"{}" has been added.'.format(t))
+        m = Minid.objects.filter(id=minid, user=request.user).first()
+        if m:
+            messages.info(request, 'Your minid has already been added.')
+        else:
+            new_min = add_minid(request.user, minid)
+            messages.info(request, '"{}" has been added.'.format(
+                new_min.description))
             log.debug('User {} added a new bag {}'.format(request.user,
-                                                          new_minid))
+                                                          new_min))
     return redirect('workflows')
 
 
@@ -158,6 +145,13 @@ def tasks(request):
     return redirect('workflows')
 
 
+def task_detail(request, task):
+    task = Task.objects.filter(id=task, user=request.user).first()
+    task_data = json.dumps(task.data, indent=4)
+    return render(request, 'task-info.html', {'task': task,
+                                              'task_data': task_data})
+
+
 def workflows(request):
     if request.method == 'POST':
         input = request.POST.get('input-bag')
@@ -181,15 +175,18 @@ def workflows(request):
             gg.data = {'apikey': p.globus_genomics_apikey}
             gg.save()
             gg.input.add(minid)
+            j = Task(name='Jupyterhub',
+                     workflow=workflow,
+                     user=request.user,
+                     category=TASK_JUPYTERHUB,
+                     status=TASK_WAITING)
+            j.save()
 
 
+    active_tasks = [{'id':t.id} for t in Task.objects.filter(user=request.user)]
     context = {'bags': Minid.objects.filter(user=request.user),
                'workflows': Workflow.objects.filter(user=request.user),
                'profile': Profile.objects.filter(user=request.user).first(),
-               # 'workflow_categories':
-               #     [
-               #      {'value': val, 'name': name}
-               #      for val, name in TASK_TASK_NAMES.items()
-               #      ]
+               'active_tasks': json.dumps(active_tasks)
                }
     return render(request, 'workflows.html', context)

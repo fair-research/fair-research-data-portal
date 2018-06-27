@@ -1,25 +1,28 @@
-  {% for wk in workflows %}
-  <li class="list-group-item">
-    <div class="row">
-      <div class="col-3">
-        {{wk.name}}
-      </div>
-      <div class="col-3">
-        {{wk.description}}
-      </div>
-      <div class="col-3">
-        {{wk.input.all.first.description}}
-      </div>
-      <div class="col-3">
-        {{wk.status}}
-      </div>
-      <!--<div class="col-1">-->
-        <!--<form id="task-form" action="{% url 'tasks' %}" method="post">-->
-          <!--{% csrf_token %}-->
-          <!--<input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">-->
-          <!--<input type="submit" value="Start Task"/>-->
-        <!--</form>-->
+  <!--{% for wk in workflows %}-->
+  <!--<li class="list-group-item">-->
+    <!--<div class="row">-->
+      <!--<div class="col-3">-->
+        <!--{{wk.name}}-->
       <!--</div>-->
-    </div>
-  </li>
-  {% endfor %}
+      <!--<div class="col-2">-->
+        <!--{{wk.description}}-->
+      <!--</div>-->
+      <!--<div class="col-2">-->
+        <!--{{wk.input.all.first.description}}-->
+      <!--</div>-->
+      <!--<div class="col-2">-->
+        <!--{{wk.status}}-->
+      <!--</div>-->
+      <!--<div class="col-3">-->
+        <!--<button type="button" class="btn btn-primary">Primary</button>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;<div class="col-1">&ndash;&gt;-->
+        <!--&lt;!&ndash;<form id="task-form" action="{% url 'tasks' %}" method="post">&ndash;&gt;-->
+          <!--&lt;!&ndash;{% csrf_token %}&ndash;&gt;-->
+          <!--&lt;!&ndash;<input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">&ndash;&gt;-->
+          <!--&lt;!&ndash;<input type="submit" value="Start Task"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</form>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--</div>-->
+  <!--</li>-->
+  <!--{% endfor %}-->
