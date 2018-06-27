@@ -19,6 +19,7 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     path('api/v1/', include(apipatterns)),
     path('profile/', profile, name='profile'),
+    path('bags/', workflows, name='bag-list'),
     path('workflows', workflows, name='workflows'),
     path('workflow/delete', workflow_delete, name='workflow-delete'),
     path('task/<int:task>/', task_detail, name='task'),

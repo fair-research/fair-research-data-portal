@@ -30,26 +30,26 @@ DEBUG = True
 PROJECT_TITLE = 'FAIR Research Data Portal'
 
 # Perf data index for example only. Change to your index when you're ready
-SEARCH_INDEX = '8246d288-add7-4f7f-b26a-4e551afba949'
+SEARCH_INDEX = '766b9766-3943-429f-a509-0433c9cbd5da'
 
 
-def generate_fake_manifests(var):
-    return [{
-        'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
-        'length': 2000000,
-        'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
-        'filename': os.path.basename(
-            var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'])
-    }, {
-        'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'],
-        'length': 2000000,
-        'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
-        'filename': os.path.basename(
-            var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'])
-        }]
+# def generate_fake_manifests(var):
+#     return [{
+#         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
+#         'length': 2000000,
+#         'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
+#         'filename': os.path.basename(
+#             var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'])
+#     }, {
+#         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'],
+#         'length': 2000000,
+#         'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
+#         'filename': os.path.basename(
+#             var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'])
+#         }]
 
 ENTRY_SERVICE_VARS = {
-    'remote_file_manifest': generate_fake_manifests,
+    'remote_file_manifest': None,
 }
 
 SEARCH_ENTRY_FIELD_PATH = ''
@@ -82,6 +82,8 @@ INSTALLED_APPS = [
     'social_django',
     'portal',  # Added explicitly here only for Django admin autodiscovery
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
