@@ -143,7 +143,7 @@ class GlobusGenomicsTask(Task):
 
 class JupyterhubTask(Task):
 
-    STAGING_EP = '5abdf86e-8f4e-11e7-aa27-22000a92523b'
+    STAGING_EP = '5b552e84-7ae7-11e8-9443-0a6d4e044368'
 
     def start(self):
         if self.status == TASK_READY:
@@ -155,11 +155,13 @@ class JupyterhubTask(Task):
                 raise TaskException('badinput', 'More than one Minid '
                                         'given for staging')
             minid = input[0]
-            # self.data = stage_bag(minid.id, self.STAGING_EP, at, 'test',
-            #                       transfer_token=tt)
-            # self.status = TASK_RUNNING
-            self.data = {'error': 'Jupyterhub is not running.'}
-            self.status = TASK_ERROR
+            staging_loc = '/{}'.format(
+                self.task.user.username.split('@', 1)[0])
+            self.data = stage_bag(minid.id, self.STAGING_EP, at, staging_loc,
+                                  transfer_token=tt)
+            self.status = TASK_RUNNING
+            # self.data = {'error': 'Jupyterhub is not running.'}
+            # self.status = TASK_ERROR
 
             return
 
