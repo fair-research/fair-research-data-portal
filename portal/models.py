@@ -18,7 +18,8 @@ TASK_STATUS_CHOICES = [(val, name)
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    globus_genomics_apikey = models.CharField(max_length=128)
+    globus_genomics_apikey = models.CharField(max_length=128, blank=True)
+    minid_email = models.CharField(max_length=128, blank=True)
 
 
 class Workflow(models.Model):

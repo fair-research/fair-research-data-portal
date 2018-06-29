@@ -65,6 +65,8 @@ SOCIAL_AUTH_GLOBUS_SCOPE = [
 
 ALLOWED_HOSTS = []
 
+BAG_LIMIT = 50
+
 
 # Application definition
 

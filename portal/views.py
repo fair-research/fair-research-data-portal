@@ -5,12 +5,16 @@ from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
 import json
+from urllib.parse import urlparse
 
 from minid_client import minid_client_api
 
 
 from globus_portal_framework.search import views as gpf_search_views
 from globus_portal_framework.search.models import Minid, MINID_BDBAG
+from globus_portal_framework.search.views import get_search_query_params
+from globus_portal_framework import post_search, load_globus_access_token
+
 
 
 from concierge.api import create_bag
@@ -30,17 +34,54 @@ def landing_page(request):
     return render(request, 'landing_page.html', context)
 
 
+# def _set_minid_email(request, minid_email):
+#     p = Profile.objects.filter(user=request.user).first()
+#     key = request.POST.get('apikey')
+#
+#
+#             messages.info(request, 'Your API key has been set.')
+#         else:
+#             messages.warning(request, 'Please enter your key.')
+#
+#     context = {'profile': p}
+#     return render(request, 'profile.html', context)
+
+
 def bag_create(request):
+
+    profile = Profile.objects.filter(user=request.user).first()
+    if not profile:
+        profile = Profile(user=request.user, minid_email=request.user.email)
+        profile.save()
+    context = {'profile': profile}
+
     if request.method == 'GET':
-        messages.warning(request, 'The index has not yet been rebuilt with '
-                                  'manifests containing proper Globus URLs. '
-                                  'Your bags will not be registered with '
-                                  'Minid. Thanks for testing!')
-        return gpf_search_views.bag_create(request)
+
+        query, filters, page = get_search_query_params(request)
+        context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
+                                        request.user, limit=settings.BAG_LIMIT)
+        # log.debug(context['search']['search_results'][0]['service'].keys())
+
+        rfm_lists = [sr['service']['remote_file_manifest']
+            for sr in context['search']['search_results']]
+        flat_rfm_list = [item for sublist in rfm_lists for item in sublist]
+
+        log.debug('{} result candidates for bag creation'.format(
+            len(context['search']['search_results'])))
+        request.session['search_query'] = urlparse(request.get_full_path()).query
+        request.session['candidate_bags'] = flat_rfm_list
+        request.session.modified = True
+        # log.debug(context['search']['search_results'][0]['service'])
+        return render(request, 'bag-create.html', context)
     if request.method == 'POST':
         bag_title = request.POST.get('bag-name')
         rfm_urls = request.POST.getlist('rfm-urls')
         can_bags = request.session.get('candidate_bags')
+        minid_email = request.POST.get('minid-email')
+        if minid_email:
+            profile.minid_email = minid_email
+            profile.save()
+        log.debug(minid_email)
         if not can_bags or not rfm_urls or not bag_title:
             log.error('Error creating a bag. Bag name "{}", Session stored '
                       'manifests ({}), or user chosen bag urls ({}) were empty'
@@ -51,28 +92,26 @@ def bag_create(request):
             return redirect('bag-list')
         del request.session['candidate_bags']
 
-        can_bags_list = []
-        for rfm in can_bags:
-            if isinstance(rfm, list):
-                can_bags_list.extend(rfm)
-            elif isinstance(rfm, dict):
-                can_bags_list.append(rfm)
 
-        manifests = [b for b in can_bags_list if b['url'] in rfm_urls]
-
-        # ENABLE THIS WHEN REMOTE FILE MANIFESTS CAN BE TRUSTED!
-        # (Remember to also remove the messages.warning above)
-        # tok = load_globus_access_token(request.user, 'auth.globus.org')
-        # resp = create_bag('https://concierge.fair-research.org', manifests,
-        #                    request.user.get_full_name(), request.user.email,
-        #                    'testbag', tok)
-        # minid = Minid(id=resp['minid_id'], user=request.user)
-
-        minid = Minid(id=bag_title, user=request.user)
-        minid.save()
-        messages.info(request, 'Your bag {} has been created with {} files.'
-                      ''.format(minid.id, len(manifests)))
-        return redirect('bag-list.html')
+        manifests = [b for b in can_bags if b['url'] in rfm_urls]
+        tok = load_globus_access_token(request.user, 'auth.globus.org')
+        try:
+            log.debug('Creating minid with: {}'.format(profile.minid_email))
+            resp = create_bag('https://concierge.fair-research.org', manifests,
+                               request.user.get_full_name(), profile.minid_email,
+                               bag_title, tok)
+            minid = Minid(id=resp['minid_id'], description=bag_title)
+            minid.save()
+            minid.users.add(request.user)
+            messages.info(request, 'Your bag {} has been created with {} files.'
+                                   ''.format(minid.id, len(manifests)))
+            return redirect('bag-list')
+        except Exception as e:
+            log.error(e)
+        messages.error(request, 'There was an error creating your bag, ensure your'
+                                ' minid email has been set correctly.')
+        log.debug(request.session.get('search_query'))
+        return redirect(reverse('bag-create') + '?' + request.session.get('search_query'))
 
 def bag_add(request):
     if request.method == 'POST':
