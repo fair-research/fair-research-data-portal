@@ -9,6 +9,7 @@ from portal.models import Task, Workflow, Profile
 class WorkflowAdmin(admin.ModelAdmin):
     list_display = ('name', 'user')
 
+
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('name', 'get_workflow', 'status', 'user')
@@ -16,6 +17,7 @@ class TaskAdmin(admin.ModelAdmin):
     def get_workflow(self, obj):
         return obj.name
 
+
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user',)
