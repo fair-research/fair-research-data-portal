@@ -148,6 +148,8 @@ def profile(request):
         if key:
             if not p:
                 p = Profile(user=request.user, globus_genomics_apikey=key)
+            else:
+                p.globus_genomics_apikey = key
             p.save()
             messages.info(request, 'Your API key has been set.')
         else:
