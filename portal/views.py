@@ -94,11 +94,16 @@ def bag_create(request):
 
 
         manifests = [b for b in can_bags if b['url'] in rfm_urls]
+        # c_scope = '524361f2-e4a9-4bd0-a3a6-03e365cac8a9'
+        # tok = load_globus_access_token(request.user, c_scope)
         tok = load_globus_access_token(request.user, 'auth.globus.org')
         try:
             log.debug('Creating minid with: {}'.format(profile.minid_email))
+            # resp = create_bag('http://localhost:8080', manifests,
+            #                    request.user.get_full_name(), request.user.email,
+            #                    bag_title, tok)
             resp = create_bag('https://concierge.fair-research.org', manifests,
-                               request.user.get_full_name(), profile.minid_email,
+                               request.user.get_full_name(), request.user.email,
                                bag_title, tok)
             minid = Minid(id=resp['minid_id'], description=bag_title)
             minid.save()

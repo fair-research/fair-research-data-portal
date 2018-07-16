@@ -76,13 +76,13 @@
                   <input type="text" class="form-control" id="baginputname" name="bag-name" aria-describedby="bagnamehelp" placeholder="my bag" required>
                   <small id="bagnamehelp" class="form-text text-muted">A name will help you refer to your data later.</small>
                 </div>
-                                <div class="form-group">
-                  <label for="api-key">Minid Registration Email</label>
-                  <input type="text" class="form-control" id="api-key" name="minid-email"
-                         value="{% if profile.minid_email %}{{profile.minid_email}}{%else%}{{request.user.email}}{%endif%}"
-                         aria-describedby="email-help" placeholder="Enter Minid E-Mail ">
-                  <small id="email-help" class="form-text text-muted">The email you use for Registering Minids.</small>
-                </div>
+                                <!--<div class="form-group">-->
+                  <!--<label for="api-key">Minid Registration Email</label>-->
+                  <!--<input type="text" class="form-control" id="api-key" name="minid-email"-->
+                         <!--value="{% if profile.minid_email %}{{profile.minid_email}}{%else%}{{request.user.email}}{%endif%}"-->
+                         <!--aria-describedby="email-help" placeholder="Enter Minid E-Mail ">-->
+                  <!--<small id="email-help" class="form-text text-muted">The email you use for Registering Minids.</small>-->
+                <!--</div>-->
                 <input class="btn btn-primary" type="submit" value="Submit">
               </form>
             </div>
