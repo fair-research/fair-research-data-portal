@@ -57,7 +57,8 @@ def bag_create(request):
     ata = AccessTokenAuthorizer(
         load_globus_access_token(request.user, 'auth.globus.org'))
     ac = AuthClient(authorizer=ata)
-    identity_not_set = bool(ac.get_identities(request.user.email))
+    identity_not_set = bool(ac.get_identities(
+        request.user.email).data.get('identities'))
 
     context = {'profile': profile, 'identity_not_set': identity_not_set}
 
