@@ -21,6 +21,20 @@
     </div>
 </div>
 
+{% if not identity_not_set %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+              Your email "{{request.user.email}}" has not been linked for your Globus Identity. You will need to
+              <a href="https://www.globus.org/app/account" target="_blank">link your email address</a> before continuing. Please
+              navigate to <strong>Add Linked Identity --> link an email address</strong>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {%block detail_messages %}
 <div class="container my-3">
     {%include "components/messages.html"%}

@@ -15,7 +15,7 @@ from globus_portal_framework.search.models import Minid, MINID_BDBAG
 from globus_portal_framework.search.views import get_search_query_params
 from globus_portal_framework import post_search, load_globus_access_token
 
-
+from globus_sdk import AuthClient, AccessTokenAuthorizer
 
 from concierge.api import create_bag
 
@@ -53,7 +53,13 @@ def bag_create(request):
     if not profile:
         profile = Profile(user=request.user, minid_email=request.user.email)
         profile.save()
-    context = {'profile': profile}
+
+    ata = AccessTokenAuthorizer(
+        load_globus_access_token(request.user, 'auth.globus.org'))
+    ac = AuthClient(authorizer=ata)
+    identity_not_set = bool(ac.get_identities(request.user.email))
+
+    context = {'profile': profile, 'identity_not_set': identity_not_set}
 
     if request.method == 'GET':
 
