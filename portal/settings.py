@@ -29,10 +29,16 @@ DEBUG = True
 
 PROJECT_TITLE = 'FAIR Research Data Portal'
 
-# Perf data index for example only. Change to your index when you're ready
-SEARCH_INDEX = '766b9766-3943-429f-a509-0433c9cbd5da'
+# nihcommons-topmed
+SEARCH_INDEX = 'd740440b-4f0f-4687-9573-0a7ce2ceda22'
 
-
+ENTRY_SERVICE_VARS = {
+    'globus_group': 'globus_group',
+    'globus_http_link': 'globus_http_link',
+    'globus_http_scope': 'globus_http_scope',
+    'remote_file_manifest': None,
+    'Argon_GUID': 'minid',
+}
 # def generate_fake_manifests(var):
 #     return [{
 #         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
@@ -171,7 +177,7 @@ WSGI_APPLICATION = 'portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'aug_1st_nih_commons_demo.sqlite3'),
     }
 }
 

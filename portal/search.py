@@ -22,7 +22,8 @@ def general_mapper(entry, schema):
                        'data': v
                   } for k, v in denamespaced.items() if schema.get(k)}
 
-    fields['title'] = {'field_title': 'Sample ID', 'value': fields['SAMPID']['data']}
+    #fields['title'] = {'field_title': 'Sample ID', 'value': fields['SAMPID']['data']}
+    fields['minid'] = entry[0].get('Argon_GUID')
 
     # if settings.DEBUG:
     #     debug_fields(entry, fields)

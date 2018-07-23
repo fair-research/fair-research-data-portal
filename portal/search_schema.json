@@ -1,106 +1,31 @@
 {
   "fields": {
-    "identifier": {
-      "field_title": "Identifier"
+    "SEQ_CTR": {
+      "field_title": "SEQ_CTR"
     },
-    "alternate_identifiers": {
-      "field_title": "Alternate identifiers"
+    "Argon_GUID": {
+      "field_title": "Argon_GUID"
     },
-    "contributors": {
-      "field_title": "Contributors"
+    "Assignment": {
+      "field_title": "Assignment"
     },
-    "creators": {
-      "field_title": "Creators"
+    "NWD_ID": {
+      "field_title": "NWD_ID"
     },
-    "dates": {
-      "field_title": "Dates"
-    },
-    "descriptions": {
-      "field_title": "Descriptions"
-    },
-    "formats": {
-      "field_title": "Formats"
-    },
-    "funding_references": {
-      "field_title": "Funding references"
-    },
-    "geo_locations": {
-      "field_title": "Geo locations"
-    },
-    "language": {
-      "field_title": "Language"
-    },
-    "publication_year": {
-      "field_title": "Publication year"
-    },
-    "publisher": {
-      "field_title": "Publisher"
-    },
-    "related_identifiers": {
-      "field_title": "Related identifiers"
-    },
-    "resource_type": {
-      "field_title": "Resource type"
-    },
-    "rights_list": {
-      "field_title": "Rights list"
-    },
-    "sizes": {
-      "field_title": "Sizes"
-    },
-    "subjects": {
-      "field_title": "Subjects"
-    },
-    "titles": {
-      "field_title": "Titles"
-    },
-    "SAMPID": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SAMPID"
-    },
-    "SMOKING_STATUS": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SMOKING_STATUS"
-    },
-    "AGE": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#AGE"
-    },
-    "SEX": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SEX"
-    },
-    "Forward_path": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#Forward_path"
-    },
-    "Reverse_path": {
-      "field_title": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#Reverse_path"
+    "HapMap_1000G_ID": {
+      "field_title": "HapMap_1000G_ID"
     }
   },
   "facets": [{
-      "name": "Age",
+      "name": "Sequence",
       "type": "terms",
-      "field_name": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#AGE",
+      "field_name": "SEQ_CTR",
       "size": 10
     },
     {
-      "name": "Smoking Status",
+      "name": "Assignment",
       "type": "terms",
-      "field_name": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SMOKING_STATUS",
-      "size": 10
-    },
-    {
-      "name": "Stage",
-      "type": "terms",
-      "field_name": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#STAGE",
-      "size": 10
-    },
-    {
-      "name": "Sex",
-      "type": "terms",
-      "field_name": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SEX",
-      "size": 10
-    },
-    {
-      "name": "Tissue Type",
-      "type": "terms",
-      "field_name": "http://gtex\\.globuscs\\.info/meta/GTEx_v7\\.xsd#SMTS",
+      "field_name": "Assignment",
       "size": 10
     }
   ],

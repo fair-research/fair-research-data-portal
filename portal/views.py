@@ -47,6 +47,30 @@ def landing_page(request):
 #     return render(request, 'profile.html', context)
 
 
+def collect_minids(request):
+    if request.method == 'POST':
+        context = {}
+        query, filters, page = get_search_query_params(request)
+        context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
+                                        request.user, limit=settings.BAG_LIMIT)
+        log.debug(context['search']['search_results'][0]['fields'].keys())
+        minids = [sr['fields']['Argon_GUID']['data']
+                  for sr in context['search']['search_results']
+                  if sr['fields']['Argon_GUID']['data']]
+
+        added = []
+        for minid in minids:
+
+            m = Minid.objects.filter(id=minid, users=request.user).first()
+            if not m:
+                added.append(minid)
+                add_minid(request.user, minid)
+        messages.info(request, '"{}" minids have been added.'.format(
+            len(added)))
+        log.debug('User added Minids: {}'.format(', '.join(added)))
+    return redirect('bag-list')
+
+
 def bag_create(request):
 
     profile = Profile.objects.filter(user=request.user).first()

@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from portal.views import (landing_page, bag_create, workflows, tasks,
                           bag_delete, bag_add, workflow_delete, profile,
-                          task_detail)
+                          task_detail, collect_minids)
 
 from portal.api import task_start, update_tasks
 
@@ -23,7 +23,7 @@ urlpatterns = [
     path('bags/', workflows, name='bag-list'),
     path('workflows', workflows, name='workflows'),
     path('bags/create/', bag_create, name='bag-create'),
-
+    path('collect-minids', collect_minids, name='collect-minids'),
     # path('search/bags/create/', bag_create, name='bag-create'),
     path('workflow/delete', workflow_delete, name='workflow-delete'),
     path('task/<int:task>/', task_detail, name='task'),
