@@ -22,7 +22,7 @@ from concierge.api import create_bag
 from portal.models import Task, Workflow, Profile
 from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
                              TASK_JUPYTERHUB, TASK_READY,
-                             TASK_WAITING, TASK_RUNNING)
+                             TASK_WAITING, TASK_RUNNING, TASK_WES)
 from portal.minid import add_minid
 
 
@@ -63,11 +63,23 @@ def collect_minids(request):
 
             m = Minid.objects.filter(id=minid, users=request.user).first()
             if not m:
-                added.append(minid)
-                add_minid(request.user, minid)
+                added.append(add_minid(request.user, minid))
         messages.info(request, '"{}" minids have been added.'.format(
             len(added)))
-        log.debug('User added Minids: {}'.format(', '.join(added)))
+        for minid in added:
+            newFlow = Workflow(name=minid.description, user=request.user)
+            newFlow.save()
+            tname = context['search']['search_results'][0]['fields']['NWD_ID']['data']  # noqa
+            newTask = Task(workflow=newFlow, user=request.user,
+                           category=TASK_WES, status=TASK_READY,
+                           name=tname)
+            newTask.save()
+            newTask.input.add(minid)
+
+
+        log.debug('User added Minids: {}'.format(
+            ', '.join([str(a) for a in added])
+        ))
     return redirect('bag-list')
 
 

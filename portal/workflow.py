@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 
 TASK_GLOBUS_GENOMICS = 'GLOBUS_GENOMICS'
 TASK_JUPYTERHUB = 'JUPYTERHUB'
+TASK_WES = 'WES'
 
 TASK_WAITING = 'WAITING'
 TASK_READY = 'READY'
@@ -23,8 +24,9 @@ TASK_ERROR = 'ERROR'
 
 
 TASK_TASK_NAMES = {
-    TASK_GLOBUS_GENOMICS: 'Globus Genomics',
-    TASK_JUPYTERHUB: 'Jupyterhub'
+    # TASK_GLOBUS_GENOMICS: 'Globus Genomics',
+    # TASK_JUPYTERHUB: 'Jupyterhub'
+    TASK_WES: 'Workflow Execution Service'
 }
 
 TASK_STATUS_NAMES = {
@@ -39,7 +41,8 @@ TASK_STATUS_NAMES = {
 def resolve_task(task_model):
     CLASSES = {
         TASK_GLOBUS_GENOMICS: GlobusGenomicsTask,
-        TASK_JUPYTERHUB: JupyterhubTask
+        TASK_JUPYTERHUB: JupyterhubTask,
+        TASK_WES: WesTask
     }
     return CLASSES[task_model.category](task_model)
 
@@ -93,6 +96,83 @@ class Task:
     def data(self, value):
         self.task.data = value
         self.task.save()
+
+
+class WesTask(Task):
+
+    WES_API = 'https://nihcommonstest.globusgenomics.org/wes/'
+    WORKFLOWS = 'workflows'
+
+    def start(self):
+        if self.status == TASK_READY:
+            input = self.task.input.all().first()
+            data = self.data
+
+            url = '{}{}'.format(self.WES_API, self.WORKFLOWS)
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': load_globus_access_token(self.task.user,
+                                                          'commons')
+            }
+            payload = {
+                'bwa_index': {
+                    'class': 'File', 'path': 'ark:/57799/b91414'
+                    },
+                    'dbsnp': {
+                        'class': 'File', 'path': 'ark:/57799/b9wb0k'
+                    },
+                    'input_file': {
+                        'class': 'File', 'path': input.id
+                    },
+                    'reference_genome': {
+                        'class': 'File', 'path': 'ark:/57799/b9mt4f'
+                    }
+            }
+            r = requests.post(url, headers=headers, json=payload)
+            log.debug(r.text)
+            data['job_id'] = str(r.text)
+            self.data = data
+            log.debug(self.data)
+            if not self.data.get('job_id'):
+                raise TaskException('ggtaskstartfail',
+                                    'No history id returned on start')
+            self.status = TASK_RUNNING
+            return
+
+    def info(self):
+        try:
+            if self.status == TASK_RUNNING:
+
+                job_id = self.data['job'].get('job_id')
+                if not job_id:
+                    return
+
+                data = self.data
+                url = '{}{}/{}/status'.format(WES_API, WORKFLOWS, job_id)
+
+                headers = {
+                    'Authorization': load_globus_access_token(self.task.user,
+                                                              'commons')
+                }
+
+                data['status'] = requests.get(url, headers=headers)
+                # log.debug(data['status'])
+                self.data = data
+                # if data['status'].get('minid'):
+                #     try:
+                #         minid = add_minid(self.task.user, data['status']['minid'])
+                #         self.task.output.add(minid)
+                #         self.status = TASK_COMPLETE
+                #     except Exception as e:
+                #         log.error('{}: {}'.format(self.task.user, e))
+                #         self.status = TASK_ERROR
+                return data['status']
+        except Exception as e:
+            # raise TaskException('Unexpected Error', str(e))
+            log.error('User {} had error with task {}'.format(self.task.user,
+                                                              self.task.id))
+            self.status = TASK_ERROR
 
 
 class GlobusGenomicsTask(Task):

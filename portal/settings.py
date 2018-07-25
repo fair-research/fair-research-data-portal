@@ -54,9 +54,6 @@ ENTRY_SERVICE_VARS = {
 #             var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'])
 #         }]
 
-ENTRY_SERVICE_VARS = {
-    'remote_file_manifest': None,
-}
 
 SEARCH_ENTRY_FIELD_PATH = ''
 SEARCH_SCHEMA = os.path.join(BASE_DIR, 'portal/search_schema.json')
@@ -66,6 +63,7 @@ SEARCH_MAPPER = ('portal.search', 'general_mapper')
 SOCIAL_AUTH_GLOBUS_SCOPE = [
     'urn:globus:auth:scope:search.api.globus.org:search',
     'urn:globus:auth:scope:transfer.api.globus.org:all',
+    'https://auth.globus.org/scopes/7ff68ee3-d931-4551-8f48-17964bda620e/gg',
     # 'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'
 ]
 
