@@ -64,6 +64,7 @@ SOCIAL_AUTH_GLOBUS_SCOPE = [
     'urn:globus:auth:scope:search.api.globus.org:search',
     'urn:globus:auth:scope:transfer.api.globus.org:all',
     'https://auth.globus.org/scopes/7ff68ee3-d931-4551-8f48-17964bda620e/gg',
+    'https://auth.globus.org/scopes/identifiers.globus.org/view',
     # 'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'
 ]
 
