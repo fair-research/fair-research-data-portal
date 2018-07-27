@@ -102,6 +102,24 @@ class WesTask(Task):
 
     WES_API = 'https://nihcommonstest.globusgenomics.org/wes/'
     WORKFLOWS = 'workflows'
+    SUBMISSION_JSON = {
+    "workflow_descriptor": "string",
+          "workflow_params": {
+                "bwa_index":
+                    {"class": "File", "path": "ark:/99999/fk4erydOcxk7PA2"},
+                "dbsnp":
+                    {"class": "File", "path": "ark:/99999/fk4zKBK8XkAnaXQ"},
+                "input_file":
+                    {"class": "File", "path": None},
+                "reference_genome":
+                    {"class": "File", "path": "ark:/99999/fk4aZVT0ZWH8Ip0"}
+          },
+          "workflow_type": "CWL",
+          "workflow_type_version": "v1.0",
+          "workflow_url": "https://github.com/sbg/sbg_dockstore_tools/blob/"
+                          "master/topmed-workflows/alignment/"
+                          "topmed-alignment.cwl"
+    }
 
     def auth_header(self):
         return {
@@ -121,20 +139,10 @@ class WesTask(Task):
                 'Authorization': load_globus_access_token(self.task.user,
                                                           'commons')
             }
-            payload = {
-                'bwa_index': {
-                    'class': 'File', 'path': 'ark:/99999/fk4erydOcxk7PA2'
-                    },
-                    'dbsnp': {
-                        'class': 'File', 'path': 'ark:/99999/fk4zKBK8XkAnaXQ'
-                    },
-                    'input_file': {
-                        'class': 'File', 'path': input.id
-                    },
-                    'reference_genome': {
-                        'class': 'File', 'path': 'ark:/99999/fk4aZVT0ZWH8Ip0'
-                    }
-            }
+            payload = self.SUBMISSION_JSON.copy()
+            payload['workflow_descriptor']['workflow_params']['input_file'] = \
+                input.id
+
             r = requests.post(url, headers=headers, json=payload)
             data['job_id'] = r.json()
 
