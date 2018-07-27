@@ -74,7 +74,18 @@ class Task(models.Model):
         try:
             return resolve_task(self).start()
         except TaskException as te:
-            log.error(te)
+            log.exception(te)
+            self.status = TASK_ERROR
+            self.save()
+
+    def stop(self):
+        try:
+            log.debug('Stopping task {}'.format(self.name))
+            response = resolve_task(self).stop()
+            log.debug('Task Stop response: {}'.format(response))
+            return response
+        except TaskException as te:
+            log.exception(te)
             self.status = TASK_ERROR
             self.save()
 

@@ -103,6 +103,12 @@ class WesTask(Task):
     WES_API = 'https://nihcommonstest.globusgenomics.org/wes/'
     WORKFLOWS = 'workflows'
 
+    def auth_header(self):
+        return {
+            'Authorization': load_globus_access_token(self.task.user,
+                                                      'commons')
+        }
+
     def start(self):
         if self.status == TASK_READY:
             input = self.task.input.all().first()
@@ -117,21 +123,21 @@ class WesTask(Task):
             }
             payload = {
                 'bwa_index': {
-                    'class': 'File', 'path': 'ark:/57799/b91414'
+                    'class': 'File', 'path': 'ark:/99999/fk4erydOcxk7PA2'
                     },
                     'dbsnp': {
-                        'class': 'File', 'path': 'ark:/57799/b9wb0k'
+                        'class': 'File', 'path': 'ark:/99999/fk4zKBK8XkAnaXQ'
                     },
                     'input_file': {
                         'class': 'File', 'path': input.id
                     },
                     'reference_genome': {
-                        'class': 'File', 'path': 'ark:/57799/b9mt4f'
+                        'class': 'File', 'path': 'ark:/99999/fk4aZVT0ZWH8Ip0'
                     }
             }
             r = requests.post(url, headers=headers, json=payload)
-            log.debug(r.text)
-            data['job_id'] = str(r.text)
+            data['job_id'] = r.json()
+
             self.data = data
             log.debug(self.data)
             if not self.data.get('job_id'):
@@ -144,35 +150,44 @@ class WesTask(Task):
         try:
             if self.status == TASK_RUNNING:
 
-                job_id = self.data['job'].get('job_id')
+                job_id = self.data.get('job_id', {}).get('workflow_id')
                 if not job_id:
                     return
 
                 data = self.data
-                url = '{}{}/{}/status'.format(WES_API, WORKFLOWS, job_id)
-
-                headers = {
-                    'Authorization': load_globus_access_token(self.task.user,
-                                                              'commons')
-                }
-
-                data['status'] = requests.get(url, headers=headers)
-                # log.debug(data['status'])
+                url = '{}{}/{}'.format(self.WES_API, self.WORKFLOWS, job_id)
+                r = requests.get(url, headers=self.auth_header())
+                data['status'] = r.json()
                 self.data = data
-                # if data['status'].get('minid'):
-                #     try:
-                #         minid = add_minid(self.task.user, data['status']['minid'])
-                #         self.task.output.add(minid)
-                #         self.status = TASK_COMPLETE
-                #     except Exception as e:
-                #         log.error('{}: {}'.format(self.task.user, e))
-                #         self.status = TASK_ERROR
                 return data['status']
         except Exception as e:
-            # raise TaskException('Unexpected Error', str(e))
+            log.exception(e)
             log.error('User {} had error with task {}'.format(self.task.user,
                                                               self.task.id))
             self.status = TASK_ERROR
+
+    def stop(self):
+        if self.status == TASK_RUNNING:
+            log.debug(self.data)
+
+            job_id = self.data.get('job_id', {}).get('workflow_id')
+            if not job_id:
+                return
+
+            data = self.data
+            url = '{}{}/{}'.format(self.WES_API, self.WORKFLOWS,
+                                   job_id)
+            log.debug('Querying {}'.format(url))
+            r = requests.delete(url, headers=self.auth_header())
+            try:
+                data['stop'] = r.json()
+            except Exception as e:
+                log.error('Task {} for user {} stopped with error'.format(
+                    self.taks, self.task.user
+                ))
+                data['stop'] = r.text
+                log.debug(r.text)
+
 
 
 class GlobusGenomicsTask(Task):

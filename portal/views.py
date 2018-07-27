@@ -205,6 +205,8 @@ def workflow_delete(request):
         r = Workflow.objects.filter(id=request.POST.get('id'),
                                     user=request.user).first()
         if r:
+            for t in r.tasks:
+                t.stop()
             r.delete()
             messages.info(request, 'Your workspace has been deleted')
     return redirect('workflows')
