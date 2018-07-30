@@ -103,22 +103,22 @@ class WesTask(Task):
     WES_API = 'https://nihcommonstest.globusgenomics.org/wes/'
     WORKFLOWS = 'workflows'
     SUBMISSION_JSON = {
-    "workflow_descriptor": "string",
-          "workflow_params": {
-                "bwa_index":
-                    {"class": "File", "path": "ark:/99999/fk4erydOcxk7PA2"},
-                "dbsnp":
-                    {"class": "File", "path": "ark:/99999/fk4zKBK8XkAnaXQ"},
-                "input_file":
-                    {"class": "File", "path": None},
-                "reference_genome":
-                    {"class": "File", "path": "ark:/99999/fk4aZVT0ZWH8Ip0"}
+    'workflow_descriptor': 'string',
+          'workflow_params': {
+                'bwa_index':
+                    {'class': 'File', 'path': 'ark:/99999/fk4erydOcxk7PA2'},
+                'dbsnp':
+                    {'class': 'File', 'path': 'ark:/99999/fk4zKBK8XkAnaXQ'},
+                'input_file':
+                    {'class': 'File', 'path': None},
+                'reference_genome':
+                    {'class': 'File', 'path': 'ark:/99999/fk4aZVT0ZWH8Ip0'}
           },
-          "workflow_type": "CWL",
-          "workflow_type_version": "v1.0",
-          "workflow_url": "https://github.com/sbg/sbg_dockstore_tools/blob/"
-                          "master/topmed-workflows/alignment/"
-                          "topmed-alignment.cwl"
+          'workflow_type': 'CWL',
+          'workflow_type_version': 'v1.0',
+          'workflow_url': 'https://github.com/sbg/sbg_dockstore_tools/blob/'
+                          'master/topmed-workflows/alignment/'
+                          'topmed-alignment.cwl'
     }
 
     def auth_header(self):
