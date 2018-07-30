@@ -164,6 +164,14 @@ class WesTask(Task):
                 url = '{}{}/{}'.format(self.WES_API, self.WORKFLOWS, job_id)
                 r = requests.get(url, headers=self.auth_header())
                 data['status'] = r.json()
+                if data['status'].get('state') == 'ok':
+                    self.status = TASK_COMPLETE
+                    minid = data['status']['outputs']['minid']
+                    if not minid:
+                        self.status = TASK_ERROR
+                    else:
+                        model_minid = add_minid(self.task.user, minid)
+                        self.task.output.add(model_minid)
                 self.data = data
                 return data['status']
         except Exception as e:
