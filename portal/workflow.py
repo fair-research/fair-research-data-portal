@@ -140,8 +140,7 @@ class WesTask(Task):
                                                           'commons')
             }
             payload = self.SUBMISSION_JSON.copy()
-            payload['workflow_params']['input_file'] = input.id
-
+            payload['workflow_params']['input_file']['path'] = input.id
             r = requests.post(url, headers=headers, json=payload)
             data['job_id'] = r.json()
 
