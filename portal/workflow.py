@@ -171,6 +171,10 @@ class WesTask(Task):
             log.error('User {} had error with task {}'.format(self.task.user,
                                                               self.task.id))
             self.status = TASK_ERROR
+            try:
+                log.debug(r.text)
+            except:
+                pass
 
     def stop(self):
         if self.status == TASK_RUNNING:
