@@ -36,7 +36,7 @@
         {{task.input.all.first.description}}
       </div>
       <div class="col-3">
-        {{task.output.all.first.description}}
+        {{task.output.all.first.description}} -- <a href="http://minid.bd2k.org/minid/landingpage/{{task.output.all.first.id}}">{{task.output.all.first.id}}</a>
       </div>
       <div id="task-{{task.id}}" class="col-2">
         {{task.status}}
@@ -44,35 +44,9 @@
       <div class="col-1">
         <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
       </div>
-
-      <!--<div class="col-1">-->
-        <!--<form id="task-form" action="{% url 'tasks' %}" method="post">-->
-          <!--{% csrf_token %}-->
-          <!--<input type="hidden" id="task-{{wk.id}}" name="id" value="{{wk.id}}">-->
-          <!--<input type="submit" value="Start Task"/>-->
-        <!--</form>-->
-      <!--</div>-->
     </div>
   </li>
   {% endfor %}
-  <!--<li class="list-group-item">-->
-    <!--<div class="row">-->
-      <!--<div class="col-9"></div>-->
-      <!--<div class="col-1">-->
-        <!--<form id="task-form" action="{% url 'tasks' %}" method="post">-->
-          <!--{% csrf_token %}-->
-          <!--<input type="hidden" id="task-{{workflow.tasks.first.id}}" name="id" value="{{workflow.tasks.first.id}}">-->
-          <!--<input type="submit" value="Start Task"/>-->
-        <!--</form>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</li>-->
-  <!--<li class="list-group-item">-->
-    <!--<div class="row">-->
-      <!--<div class="col-9">-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</li>-->
   </ul>
 
 
