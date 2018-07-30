@@ -100,7 +100,7 @@ class Task:
 
 class WesTask(Task):
 
-    WES_API = 'https://nihcommonstest.globusgenomics.org/wes/'
+    WES_API = 'https://nihcommons.globusgenomics.org/wes/'
     WORKFLOWS = 'workflows'
     SUBMISSION_JSON = {
     'workflow_descriptor': 'string',
