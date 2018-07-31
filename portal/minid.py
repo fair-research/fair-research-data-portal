@@ -22,7 +22,12 @@ IDENTIFIERS_URL = 'https://identifiers.globus.org/'
 #                             app_name='My Service',
 #                             authorizer=globus_sdk.AccessTokenAuthorizer(token))
 
+
 def add_minid(user, minid):
+    old_minid = Minid.objects.filter(id=minid).first()
+    if old_minid:
+        return old_minid
+
     if len(minid) > len('ark:/57799/b9jx3g'):
         r = requests.get('{}{}'.format(IDENTIFIERS_URL, minid))
         minid_data = r.json()

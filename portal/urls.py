@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from portal.views import (landing_page, bag_create, workflows, tasks,
                           bag_delete, bag_add, workflow_delete, profile,
-                          task_detail, collect_minids)
+                          task_detail, collect_minids, task_delete)
 
 from portal.api import task_start, update_tasks
 
@@ -27,7 +27,9 @@ urlpatterns = [
     # path('search/bags/create/', bag_create, name='bag-create'),
     path('workflow/delete', workflow_delete, name='workflow-delete'),
     path('task/<int:task>/', task_detail, name='task'),
-    path('tasks', tasks, name='tasks'),
+    path('task', tasks, name='tasks'),
+    path('task/delete', task_delete, name='task-delete'),
+
     path('search/bags/delete/<path:minid>/', bag_delete, name='bag-delete'),
     path('search/bags/add', bag_add, name='bag-add'),
     path('search/', include('globus_portal_framework.search.urls')),

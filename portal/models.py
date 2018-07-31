@@ -28,7 +28,7 @@ class Workflow(models.Model):
 
     @property
     def tasks(self):
-        return Task.objects.filter(workflow=self)
+        return Task.objects.filter(workflow=self).order_by('name')
 
 
 class Task(models.Model):

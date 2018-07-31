@@ -19,30 +19,39 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">
     <div class="row">
-      <div class="col-3">Task Name</div>
+      <div class="col-2">Task Name</div>
       <div class="col-3">Input Files</div>
       <div class="col-3">Output Files</div>
-      <div class="col-3">Status</div>
-      <!--<div class="col-3"></div>-->
+      <div class="col-2">Status</div>
+      <div class="col-2"></div>
     </div>
   </li>
   {% for task in workflow.tasks %}
   <li class="list-group-item">
     <div class="row">
-      <div class="col-3">
+      <div class="col-2">
         <a href="{% url 'task' task.id %}">{{task.name}}</a>
       </div>
       <div class="col-3">
-        {{task.input.all.first.description}}
+        {{task.input.all.first.description}} -- <a target="blank" href="https://identifiers.globus.org/{{task.input.all.first.id}}">{{task.input.all.first.id}}</a>
       </div>
       <div class="col-3">
-        {{task.output.all.first.description}} -- <a href="http://minid.bd2k.org/minid/landingpage/{{task.output.all.first.id}}">{{task.output.all.first.id}}</a>
+        {{task.output.all.first.description}} -- <a target="blank" href="http://minid.bd2k.org/minid/landingpage/{{task.output.all.first.id}}">{{task.output.all.first.id}}</a>
       </div>
       <div id="task-{{task.id}}" class="col-2">
         {{task.status}}
       </div>
       <div class="col-1">
         <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
+      </div>
+      <div class="col-1">
+        <form method="post" action="{% url 'task-delete' %}">
+        {% csrf_token %}
+        <input type="hidden" id="{{task.id}}" name="id" value="{{task.id}}">
+        <button type="submit" class="btn btn-secondary">
+            <i class="fa fa-trash "></i>
+        </button>
+        </form>
       </div>
     </div>
   </li>

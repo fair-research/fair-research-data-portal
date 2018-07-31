@@ -54,32 +54,56 @@ def collect_minids(request):
         context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
                                         request.user, limit=settings.BAG_LIMIT)
         log.debug(context['search']['search_results'][0]['fields'].keys())
-        minids = [sr['fields']['Argon_GUID']['data']
-                  for sr in context['search']['search_results']
-                  if sr['fields']['Argon_GUID']['data']]
+
+        records = [
+            {
+            'minid': sr['fields']['Argon_GUID']['data'],
+            'assignment': sr['fields'].get('Assignment', {}).get('data') or
+                          'Downsampled',
+            'seq': sr['fields']['SEQ_CTR']['data'],
+            'nwdid': sr['fields']['NWD_ID']['data'],
+            } for sr in context['search']['search_results']
+              if sr['fields']['Argon_GUID']['data']
+        ]
+
+        grouped_records = {}
+        for record in records:
+            assignment = record['assignment']
+            if grouped_records.get(assignment):
+                grouped_records[assignment].append(record)
+            else:
+                grouped_records[assignment] = [record]
 
         added = []
-        for minid in minids:
+        for assignment, trecords in grouped_records.items():
+            wname = '{} Topmed'.format(assignment)
+            workflow = Workflow.objects.filter(name=wname,
+                                               user=request.user).first()
+            if not workflow:
+                workflow = Workflow(name=wname, user=request.user)
+                workflow.save()
 
-            m = Minid.objects.filter(id=minid, users=request.user).first()
-            if not m:
-                added.append(add_minid(request.user, minid))
-        messages.info(request, '"{}" minids have been added.'.format(
-            len(added)))
-        for minid in added:
-            newFlow = Workflow(name=minid.description, user=request.user)
-            newFlow.save()
-            tname = context['search']['search_results'][0]['fields']['NWD_ID']['data']  # noqa
-            newTask = Task(workflow=newFlow, user=request.user,
-                           category=TASK_WES, status=TASK_READY,
-                           name=tname)
-            newTask.save()
-            newTask.input.add(minid)
+            already_added = []
+            for task in workflow.tasks:
+                already_added.extend(task.input.all())
+            for record in trecords:
+                minid = add_minid(request.user, record['minid'])
+                if minid not in already_added:
+                    tname = 'Seq: {}'.format(record['seq'])
+                    newTask = Task(workflow=workflow, user=request.user,
+                                   category=TASK_WES, status=TASK_READY,
+                                   name=tname)
+                    newTask.save()
+                    newTask.input.add(minid)
+                    added.append(newTask)
 
-
-        log.debug('User added Minids: {}'.format(
-            ', '.join([str(a) for a in added])
-        ))
+        msg = '{} new task{} added.'.format(len(added),
+                                            's' if len(added) > 1 else '')
+        old = len(records) - len(added)
+        if old:
+            msg += (' {} {} already present and not added again'
+                    '.'.format(old, 'were' if old > 1 else 'was'))
+        messages.info(request, msg)
     return redirect('bag-list')
 
 
@@ -209,6 +233,16 @@ def workflow_delete(request):
                 t.stop()
             r.delete()
             messages.info(request, 'Your workspace has been deleted')
+    return redirect('workflows')
+
+def task_delete(request):
+    if request.method == 'POST':
+        t = Task.objects.filter(id=request.POST.get('id'),
+                                user=request.user).first()
+        if t.status == TASK_RUNNING:
+            t.stop()
+        t.delete()
+        messages.info(request, 'Task has been deleted.')
     return redirect('workflows')
 
 
