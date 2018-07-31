@@ -21,7 +21,7 @@ urlpatterns = [
     path('api/v1/', include(apipatterns)),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
-    path('workflows', workflows, name='workflows'),
+    path('workflows/', workflows, name='workflows'),
     path('bags/create/', bag_create, name='bag-create'),
     path('collect-minids', collect_minids, name='collect-minids'),
     # path('search/bags/create/', bag_create, name='bag-create'),
