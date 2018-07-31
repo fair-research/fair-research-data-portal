@@ -9,10 +9,10 @@
   <a class="nav-link" href="{% url 'profile' %}">{{request.user.username }}</a>
 </li>
 <li>
-  <a class="nav-link" href="{% url 'logout' %}?next=/">Logout</a>
+  <a class="nav-link" href="{% url 'fair-portal-logout' %}">Logout</a>
 </li>
 {% elif auth_enabled %}
 <li>
-  <a class="nav-link" href="{% url 'login' %}globus?next=/">Login</a>
+  <a class="nav-link" href="{% url 'fair-portal-login' %}">Login</a>
 </li>
 {% endif %}
