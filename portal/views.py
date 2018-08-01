@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 import json
 from urllib.parse import urlparse
 
@@ -46,7 +48,7 @@ def landing_page(request):
 #     context = {'profile': p}
 #     return render(request, 'profile.html', context)
 
-
+@login_required
 def bag_create(request):
 
     profile = Profile.objects.filter(user=request.user).first()
@@ -129,6 +131,8 @@ def bag_create(request):
         log.debug(request.session.get('search_query'))
         return redirect(reverse('bag-create') + '?' + request.session.get('search_query'))
 
+
+@login_required
 def bag_add(request):
     if request.method == 'POST':
         minid = request.POST.get('minid')
@@ -145,6 +149,7 @@ def bag_add(request):
     return redirect('workflows')
 
 
+@login_required
 def bag_delete(request, minid):
     log.debug('User {} request to delete: {}'.format(request.user, minid))
     m = Minid.objects.filter(users=request.user, id=minid).first()
@@ -156,6 +161,7 @@ def bag_delete(request, minid):
     return redirect('workflows')
 
 
+@login_required
 def profile(request):
     p = Profile.objects.filter(user=request.user).first()
     if request.method == 'POST':
@@ -175,6 +181,7 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
+@login_required
 def workflow_delete(request):
     if request.method == 'POST':
         r = Workflow.objects.filter(id=request.POST.get('id'),
@@ -185,6 +192,7 @@ def workflow_delete(request):
     return redirect('workflows')
 
 
+@login_required
 def tasks(request):
     if request.method == 'POST':
         tid = request.POST.get('id')
@@ -202,13 +210,14 @@ def tasks(request):
     return redirect('workflows')
 
 
+@login_required
 def task_detail(request, task):
     task = Task.objects.filter(id=task, user=request.user).first()
     task_data = json.dumps(task.data, indent=4)
     return render(request, 'task-info.html', {'task': task,
                                               'task_data': task_data})
 
-
+@login_required
 def workflows(request):
     if request.method == 'POST':
         input = request.POST.get('input-bag')

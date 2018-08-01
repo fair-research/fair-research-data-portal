@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+# from django.urls import reverse
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,6 +33,8 @@ PROJECT_TITLE = 'FAIR Research Data Portal'
 # Perf data index for example only. Change to your index when you're ready
 SEARCH_INDEX = '766b9766-3943-429f-a509-0433c9cbd5da'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login/globus/'
 
 
 # def generate_fake_manifests(var):
