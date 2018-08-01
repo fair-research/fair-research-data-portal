@@ -1,6 +1,7 @@
 from django.urls import path, include, re_path, reverse
 from django.shortcuts import redirect
 from django.contrib import admin
+from django.conf import settings
 
 
 from portal.views import (landing_page, bag_create, workflows, tasks,
@@ -9,7 +10,7 @@ from portal.views import (landing_page, bag_create, workflows, tasks,
 
 from portal.api import task_start, update_tasks
 
-PREFIX = 'july-demo/'
+
 
 apipatterns = [
     path('task/start/', task_start, name='task-start'),
@@ -18,12 +19,13 @@ apipatterns = [
 ]
 
 general = [
-    path('fair-portal-login/',
-         lambda r: redirect(reverse('login') + 'globus?next=/' + r.get_full_path()),
-         name='fair-portal-login'),
-    path('fair-portal-logout/',
-         lambda r: redirect(reverse('logout') + '?next=/' + PREFIX),
-         name='fair-portal-logout'),
+    # path('fair-portal-login/',
+    #      lambda r: redirect(reverse('login') + 'globus?next=' + r.get_full_path()),
+    #      name='fair-portal-login'),
+    # path('fair-portal-logout/',
+    #      lambda r: redirect(reverse('logout') + '?next=/' +
+    #                         settings.LOGIN_REDIRECT_URL),
+    #      name='fair-portal-logout'),
     path('admin/', admin.site.urls),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
@@ -43,7 +45,6 @@ general = [
 ]
 
 urlpatterns = [
-    path('accounts/profile/', lambda r: redirect('/'+PREFIX)),
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
     # path()
