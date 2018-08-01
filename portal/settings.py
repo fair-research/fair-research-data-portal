@@ -32,6 +32,8 @@ PROJECT_TITLE = 'FAIR Research Data Portal'
 # nihcommons-topmed
 SEARCH_INDEX = 'd740440b-4f0f-4687-9573-0a7ce2ceda22'
 
+LOGIN_URL = '/login/globus'
+
 ENTRY_SERVICE_VARS = {
     'globus_group': 'globus_group',
     'globus_http_link': 'globus_http_link',
