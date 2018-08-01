@@ -31,6 +31,7 @@ PROJECT_TITLE = 'FAIR Research Data Portal'
 
 # Perf data index for example only. Change to your index when you're ready
 SEARCH_INDEX = '766b9766-3943-429f-a509-0433c9cbd5da'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 
 
 # def generate_fake_manifests(var):
