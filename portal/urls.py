@@ -44,12 +44,12 @@ general = [
 
 urlpatterns = [
     path('accounts/profile/', lambda r: redirect('/'+PREFIX)),
-    path(PREFIX, include('social_django.urls')),
-    path(PREFIX, include('django.contrib.auth.urls')),
+    path('', include('social_django.urls')),
+    path('', include('django.contrib.auth.urls')),
     # path()
-    path(PREFIX + 'api/v1/', include(apipatterns)),
-    path(PREFIX, include(general)),
-    path(PREFIX, include('globus_portal_framework.search.urls'),
+    path('' + 'api/v1/', include(apipatterns)),
+    path('', include(general)),
+    path('', include('globus_portal_framework.search.urls'),
          name='landing_page'),
 
 ]
