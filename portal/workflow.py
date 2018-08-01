@@ -201,7 +201,7 @@ class WesTask(Task):
                 data['stop'] = r.json()
             except Exception as e:
                 log.error('Task {} for user {} stopped with error'.format(
-                    self.taks, self.task.user
+                    self.tasks, self.task.user
                 ))
                 data['stop'] = r.text
                 log.debug(r.text)
