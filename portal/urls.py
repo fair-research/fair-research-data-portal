@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 
 
-from portal.views import (landing_page, bag_create, workflows, tasks,
+from portal.views import (intro_page, bag_create, workflows, tasks,
                           bag_delete, bag_add, workflow_delete, profile,
                           task_detail)
 
@@ -19,13 +19,7 @@ apipatterns = [
 ]
 
 general = [
-    # path('fair-portal-login/',
-    #      lambda r: redirect(reverse('login') + 'globus?next=' + r.get_full_path()),
-    #      name='fair-portal-login'),
-    # path('fair-portal-logout/',
-    #      lambda r: redirect(reverse('logout') + '?next=/' +
-    #                         settings.LOGIN_REDIRECT_URL),
-    #      name='fair-portal-logout'),
+    path('', intro_page, name='intro-page'),
     path('admin/', admin.site.urls),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
@@ -50,7 +44,7 @@ urlpatterns = [
     # path()
     path('' + 'api/v1/', include(apipatterns)),
     path('', include(general)),
-    path('', include('globus_portal_framework.search.urls'),
+    path('search/', include('globus_portal_framework.search.urls'),
          name='landing_page'),
 
 ]

@@ -1,0 +1,79 @@
+{%extends "base.html"%}
+{% load static %}
+
+{%block headextras%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+  <style>
+
+    h1, h2, h3 {color: black; font-weight: 500}
+    body {line-height: 1.2;}
+    p {font-weight: 500}
+    li {font-weight: 500}
+
+
+  </style>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row mt-5">
+  <div class="col-2"></div>
+  <div class="col-8">
+
+    <h1 class="my-5">NIH Commons Fullstack Demo with TOPMED Data</h1>
+
+    <h2>NIH Commons Fullstack Demo with TOPMED Data</h2>
+
+    <p class="lead"><strong>
+      This
+      <a href="https://github.com/fair-research/fair-genomics/tree/master/3M.5.Fullstacks">
+         README
+      </a> describes the implementation of a Fullstacks platform that
+      allows a user to login, perform a faceted search and create a workspace
+      to perform secondary and tertiary analysis using workflows and a Jupyter
+      notebook. It allows us to do the following:
+    </strong></p>
+
+    <ul class="lead">
+      <li class="lead"><strong> <a href="{% url  'social:begin' 'globus' %}?next=/july-demo">Login</a>
+        to the fullstacks platform using Globus credentials</strong></li>
+      <li class="lead"><strong><a href="/july-demo/search/?q=*">Search</a> on GTEx metadata for a faceted search</strong></li>
+      <li class="lead"><strong>Create a inputs BDBag for the search results of interest</strong></li>
+      <li class="lead"><strong>Create a workspace that allows users to start the Topmed RNA-Seq workflow analysis for the inputs BDBag created</strong></li>
+      <li class="lead"><strong>Get the analysis results back into the workspace as a MINID representing a BDBag of outputs.</strong></li>
+      <li class="lead"><strong>Submit the results to JupyterHub for further interactive downstream analysis</strong></li>
+    </ul>
+
+    <h2>New Features</h2>
+
+    <p class="lead"><strong>
+      We built upon the previous month's deliverable (2M.1 Fullstacks) to
+      introduce many new features in this month’s deliverable.
+    </strong></p>
+
+    <ul class="lead">
+      <li class="lead"><strong>We added a new portal that indexes metadata on various transcriptome RNA samples from lung cancer studies.</strong></li>
+      <li class="lead"><strong>We added workspace concept within the portal that allows a user to create and manage datasets in the form of BDBags represented by MINID as identifiers; the workspace also allows to perform analytical operations using other tools and platforms such as Globus Genomics and JupyterHub</strong></li>
+      <li class="lead"><strong>Within the Globus Genomics component that allows analysis of the RNA-Seq data, we introduced a new feature to translate a BDBag into a Galaxy data collection to allow multi-sample analysis in parallel using AWS compute resources</strong></li>
+      <li class="lead"><strong>Globus Genomics uses AWS spot instances and user a scheduling algorithm to select cheapest spot instances across various AWS Regions and Availability Zones.</strong></li>
+      <li class="lead"><strong>We added a new JupyterHub component that allows further downstream analysis of the transcriptomic data such as a differential expression analysis on multiple samples of RNA-Seq datasets.</strong></li>
+    </ul>
+
+    <h2>Further Reading</h2>
+
+    <p class="lead"><strong>For more information, see the full
+      <a href="https://github.com/fair-research/fair-genomics/tree/master/3M.5.Fullstacks">
+        documentation here</a>.
+    </strong></p>
+
+    <div class="my-5"></div>
+
+
+  </div>
+  <div class="col-2"></div>
+
+</div>
+
+
+{% endblock %}
