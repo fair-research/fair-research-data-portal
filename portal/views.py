@@ -30,9 +30,13 @@ from portal.minid import add_minid
 log = logging.getLogger(__name__)
 
 
+def intro_page(request):
+    return render(request, 'intro-page.html', {})
+
+
 def landing_page(request):
-    context = {}
-    return render(request, 'landing_page.html', context)
+    context = {'auth_enabled': False}
+    return render(request, 'landing-page.html', context)
 
 
 # def _set_minid_email(request, minid_email):

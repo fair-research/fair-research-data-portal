@@ -2,9 +2,9 @@ from django.urls import path, include, re_path
 from django.contrib import admin
 
 
-from portal.views import (landing_page, bag_create, workflows, tasks,
-                          bag_delete, bag_add, workflow_delete, profile,
-                          task_detail, collect_minids, task_delete)
+from portal.views import (intro_page, landing_page, bag_create, workflows,
+                          tasks, bag_delete, bag_add, workflow_delete,
+                          profile, task_detail, collect_minids, task_delete)
 
 from portal.api import task_start, update_tasks
 
@@ -15,6 +15,8 @@ apipatterns = [
 ]
 
 urlpatterns = [
+    path('', landing_page, name='landing-page'),
+    path('introduction/', intro_page, name='intro-page'),
     path('admin/', admin.site.urls),
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
@@ -34,6 +36,6 @@ urlpatterns = [
     path('search/bags/add', bag_add, name='bag-add'),
     path('search/', include('globus_portal_framework.search.urls')),
 
-    path('', include('globus_portal_framework.search.urls'), name='landing_page')
+    path('search', include('globus_portal_framework.search.urls'), name='landing-page')
     # path('', landing_page, name='landing_page')
 ]
