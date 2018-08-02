@@ -1,3 +1,6 @@
+<li>
+  <a class="nav-link" href="{% url 'intro-page' %}">Docs</a>
+</li>
 {%if auth_enabled and request.user.is_authenticated %}
 <li>
   <a class="nav-link" href="{% url 'search' %}">Search</a>
