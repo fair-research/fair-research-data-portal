@@ -111,7 +111,7 @@ def collect_minids(request):
             msg += (' {} {} already present and not added again'
                     '.'.format(old, 'were' if old > 1 else 'was'))
         messages.info(request, msg)
-    return redirect('bag-list')
+    return redirect('workflows')
 
 
 @login_required

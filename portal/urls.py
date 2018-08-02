@@ -36,6 +36,6 @@ urlpatterns = [
     path('search/bags/add', bag_add, name='bag-add'),
     path('search/', include('globus_portal_framework.search.urls')),
 
-    path('search', include('globus_portal_framework.search.urls'), name='landing-page')
+    #path('search', include('globus_portal_framework.search.urls'), name='landing-page')
     # path('', landing_page, name='landing_page')
 ]
