@@ -23,7 +23,7 @@ general = [
     path('admin/', admin.site.urls),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
-    path('workflows', workflows, name='workflows'),
+    path('workflows/', workflows, name='workflows'),
     path('bags/create/', bag_create, name='bag-create'),
 
     # path('search/bags/create/', bag_create, name='bag-create'),
