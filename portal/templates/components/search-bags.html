@@ -1,7 +1,7 @@
 {% if search.facets and user.is_authenticated %}
 <form method="post" action="{% url 'collect-minids' %}?{{request.session.search.full_query}}">
   {% csrf_token %}
-  <input type="submit" value="Add Minids">
+  <input type="submit" value="Create Workspace">
 </form>
 {% endif %}
 
