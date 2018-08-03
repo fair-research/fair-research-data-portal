@@ -33,6 +33,9 @@ PROJECT_TITLE = 'FAIR Research Data Portal'
 SEARCH_INDEX = 'd740440b-4f0f-4687-9573-0a7ce2ceda22'
 
 LOGIN_URL = '/login/globus'
+# Set to this on server
+#SERVER_URL = '/4M.4.Fullstacks/'
+SERVER_URL = ''
 
 ENTRY_SERVICE_VARS = {
     'globus_group': 'globus_group',
@@ -130,6 +133,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'globus_portal_framework.context_processors.globals',
+                'portal.context_processors.globals',
             ],
         },
     },

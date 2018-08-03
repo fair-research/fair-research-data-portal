@@ -1,5 +1,6 @@
 from django.urls import path, include, re_path, reverse
 from django.contrib import admin
+from django.conf import settings
 from django.shortcuts import redirect
 
 
@@ -15,9 +16,8 @@ apipatterns = [
     # path('tasks/active', get_running_tasks, name='tasks-active')
 ]
 
-urlpatterns = [
-    path('', landing_page, name='landing-page'),
-    path('introduction/', intro_page, name='intro-page'),
+main_site = [
+    path('', intro_page, name='intro-page'),
     path('admin/', admin.site.urls),
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
@@ -39,6 +39,11 @@ urlpatterns = [
     path('search/bags/add', bag_add, name='bag-add'),
     path('search/', include('globus_portal_framework.search.urls')),
 
+]
+
+urlpatterns = [
+    path('', landing_page, name='landing-page'),
     #path('search', include('globus_portal_framework.search.urls'), name='landing-page')
     # path('', landing_page, name='landing_page')
+    path(settings.SERVER_URL, include(main_site))
 ]
