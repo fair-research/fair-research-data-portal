@@ -3,6 +3,12 @@
 
 {%block headextras%}
   <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+  <style>
+    h3 {color: black; font-weight: 500}
+    body {line-height: 1.2;}
+    p {font-weight: 500}
+    li {font-weight: 500}
+  </style>
 {% endblock %}
 
 
@@ -17,19 +23,31 @@
 <div class="row">
   <div class="col"></div>
   <div class="col-10">
-    <h2 class="text-center card card-body">
-      <a href="/3M.5.Fullstacks/">3M.5.Fullstacks Demo</a>
-    </h2>
+    <div class="text-center card card-body my-2">
+      <h2>
+        <a href="/3M.5.Fullstacks/">3M.5.Fullstacks Demo</a>
+      </h2>
+      <p class="lead"><small>
+      3M.5.Fullstacks demonstrates creating Minid collections from GSM data and analyzing them in Globus Genomics
+    </small>
+    </p>
+    </div>
   </div>
   <div class="col"></div>
 </div>
 
 <div class="row">
   <div class="col"></div>
-  <div class="col-10">
-    <h2 class="text-center card card-body">
-      <a href="{% url 'intro-page' %}">4M.4.Fullstacks Demo</a>
-    </h2>
+    <div class="col-10">
+    <div class="text-center card card-body my-2">
+      <h2>
+        <a href="{% url 'intro-page' %}">4M.4.Fullstacks Demo</a>
+      </h2>
+      <p class="lead"><small>
+      4M.4 Fullstacks demonstrates analysis on TOPMed samples with the CWL-Runner
+    </small>
+    </p>
+    </div>
   </div>
   <div class="col"></div>
 </div>
