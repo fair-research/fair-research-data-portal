@@ -21,11 +21,42 @@
   <div class="col-2"></div>
   <div class="col-8">
 
-    <h1 class="my-5">NIH Commons Fullstack Demo with TOPMED Data</h1>
+    <h1 class="my-5">NIH Commons 4M.4.Fullstacks Demo with GSM Data</h1>
 
-    <h2>Coming Soon</h2>
+    <h2>Quickstart Tutorial</h2>
+
+    <p class="lead"><strong>
+      This quickstart tutorial walks through a quick submission of 5 downsampled
+      TOPMed CRAM input files using a TOPMed Alignment workflow in CWL. It uses
+      a portal to index and search the input datasets and submits to a WES
+      (Workflow Execution Service - GA4GH) service deployed as a shim-layer on
+      the Galaxy based Globus Genomics platform.
+    </strong></p>
+
+    <ul class="lead">
+      <li class="lead"><strong> <a href="{% url  'social:begin' 'globus' %}?next=/{{server_url}}">Login</a>
+        to the search portal using your Globus credentials </strong></li>
+      <li class="lead"><strong><a href="{% url 'search' %}?q=*">Search</a> for the 5 downsampled input CRAM files using the search tag "downsampled"</strong></li>
+      <li class="lead"><strong>Select the 5 samples by checking the box next to "downsampled" in the left menu</strong></li>
+      <li class="lead"><strong>Click on "Add Minids" button, which creates a Workspace called "Downsampled Topmed" and adds these 5 samples for analysis</strong></li>
+
+      <li class="lead"><strong>Then click on the "Start" button for each input CRAM file to initiate the alignment workflow using Globus Genomics backend</strong></li>
+      <li class="lead"><strong>Typically, after 20-25mins, the analysis of the 5 downsampled inputs should be completed and you should see the resulting BDBag-Minid under the "Output files" column of the workspace. The picture below shows a screenshot of the workspace used for the analysis of the 5 input CRAM files
+</strong></li>
+    </ul>
+
+    <h2>Further Reading</h2>
+
+    <p class="lead"><strong>For more information, see the full
+      <a href="https://github.com/fair-research/fair-genomics/tree/master/3M.5.Fullstacks">
+        documentation here</a>.
+    </strong></p>
+
+    <div class="my-5"></div>
+
 
   </div>
+  <div class="col-2"></div>
 
 </div>
 

@@ -31,7 +31,6 @@ log = logging.getLogger(__name__)
 
 
 def intro_page(request):
-    return redirect(reverse('search'))
     return render(request, 'intro-page.html', {})
 
 
