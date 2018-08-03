@@ -1,5 +1,6 @@
-from django.urls import path, include, re_path
+from django.urls import path, include, re_path, reverse
 from django.contrib import admin
+from django.shortcuts import redirect
 
 
 from portal.views import (intro_page, landing_page, bag_create, workflows,
@@ -23,7 +24,9 @@ urlpatterns = [
     path('api/v1/', include(apipatterns)),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
-    path('workflows/', workflows, name='workflows'),
+    path('workspaces/', workflows, name='workspaces'),
+    path('workflows/', lambda r: redirect(reverse('workspaces')),
+         name='workflows'),
     path('bags/create/', bag_create, name='bag-create'),
     path('collect-minids', collect_minids, name='collect-minids'),
     # path('search/bags/create/', bag_create, name='bag-create'),
