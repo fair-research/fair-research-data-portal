@@ -23,7 +23,9 @@ general = [
     path('admin/', admin.site.urls),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
-    path('workflows/', workflows, name='workflows'),
+    path('workspaces/', workflows, name='workspaces'),
+    path('workflows/', lambda x: redirect(reverse('workspaces')),
+         name='workflows'),
     path('bags/create/', bag_create, name='bag-create'),
 
     # path('search/bags/create/', bag_create, name='bag-create'),
