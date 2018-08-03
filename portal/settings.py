@@ -35,6 +35,8 @@ SEARCH_INDEX = '766b9766-3943-429f-a509-0433c9cbd5da'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login/globus/'
+# Set to '/3M.5.Fullstacks/' on server
+SERVER_URL = ''
 
 
 # def generate_fake_manifests(var):
@@ -127,6 +129,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'globus_portal_framework.context_processors.globals',
+                'portal.context_processors.globals',
             ],
         },
     },

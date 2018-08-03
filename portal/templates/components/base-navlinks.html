@@ -12,10 +12,10 @@
   <a class="nav-link" href="{% url 'profile' %}">{{request.user.username }}</a>
 </li>
 <li>
-  <a class="nav-link" href="{% url 'logout' %}?next=/july-demo">Logout</a>
+  <a class="nav-link" href="{% url 'logout' %}?next={{server_url}}">Logout</a>
 </li>
 {% elif auth_enabled %}
 <li>
-  <a class="nav-link" href="{% url  'social:begin' 'globus' %}?next=/july-demo">Login</a>
+  <a class="nav-link" href="{% url  'social:begin' 'globus' %}?next={{server_url}}">Login</a>
 </li>
 {% endif %}
