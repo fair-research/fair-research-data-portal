@@ -33,10 +33,11 @@
         <a href="{% url 'task' task.id %}">{{task.name}}</a>
       </div>
       <div class="col-3">
-        {{task.input.all.first.description}} -- <a target="blank" href="https://identifiers.globus.org/{{task.input.all.first.id}}">{{task.input.all.first.id}}</a>
+        {{task.input.all.first.description}} -- <a target="blank" href="{{task.input.all.first.landing_page}}">{{task.input.all.first.id}}</a>
       </div>
       <div class="col-3">
-        {{task.output.all.first.description}} -- <a target="blank" href="http://minid.bd2k.org/minid/landingpage/{{task.output.all.first.id}}">{{task.output.all.first.id}}</a>
+        {{task.output.all.first.description}} -- <a target="blank" href=
+              "{{task.output.all.first.landing_page}}">{{task.output.all.first.id}}</a>
       </div>
       <div id="task-{{task.id}}" class="col-2">
         {{task.status}}
