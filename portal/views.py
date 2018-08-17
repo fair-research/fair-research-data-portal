@@ -72,45 +72,29 @@ def collect_minids(request):
               if sr['fields']['Argon_GUID']['data']
         ]
 
-        grouped_records = {}
         for record in records:
-            assignment = record['assignment']
-            if grouped_records.get(assignment):
-                grouped_records[assignment].append(record)
-            else:
-                grouped_records[assignment] = [record]
+            wname = '{} Topmed {}'.format(record['assignment'], record['seq'])
 
-        added = []
-        for assignment, trecords in grouped_records.items():
-            wname = '{} Topmed'.format(assignment)
-            workflow = Workflow.objects.filter(name=wname,
-                                               user=request.user).first()
-            if not workflow:
-                workflow = Workflow(name=wname, user=request.user)
-                workflow.save()
+            workflow = Workflow(name=wname, user=request.user, metadata=record)
+            workflow.save()
 
-            already_added = []
-            for task in workflow.tasks:
-                already_added.extend(task.input.all())
-            for record in trecords:
-                minid = add_minid(request.user, record['minid'])
-                if minid not in already_added:
-                    tname = 'Seq: {}'.format(record['seq'])
-                    newTask = Task(workflow=workflow, user=request.user,
-                                   category=TASK_WES, status=TASK_READY,
-                                   name=tname)
-                    newTask.save()
-                    newTask.input.add(minid)
-                    added.append(newTask)
+            minid = add_minid(request.user, record['minid'])
+            # if minid not in already_added:
+            tname = 'Globus Genomics'
+            ggTask = Task(workflow=workflow, user=request.user,
+                           category=TASK_WES, status=TASK_READY,
+                           name=tname)
 
-        msg = '{} new task{} added.'.format(len(added),
-                                            's' if len(added) > 1 else '')
-        old = len(records) - len(added)
-        if old:
-            msg += (' {} {} already present and not added again'
-                    '.'.format(old, 'were' if old > 1 else 'was'))
-        messages.info(request, msg)
-    return redirect('workflows')
+            ggTask.save()
+            ggTask.input.add(minid)
+            transferTask = Task(workflow=workflow, user=request.user,
+                           category=TASK_JUPYTERHUB, status=TASK_WAITING,
+                           name='Transfer to Jupyterhub')
+            transferTask.save()
+
+        messages.info(request, '{} new workspace job{} added.'.format(
+                      len(records),'s' if len(records) > 1 else ''))
+    return redirect('workspaces')
 
 
 @login_required

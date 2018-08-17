@@ -43,7 +43,7 @@ def update_tasks(request):
     for task in tasks:
         task.update()
 
-    #_ready_next_task(list(tasks))
+    _ready_next_task(list(tasks))
     return _task_list_response(tasks)
 
 

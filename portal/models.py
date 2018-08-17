@@ -25,10 +25,23 @@ class Profile(models.Model):
 class Workflow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
+    date_added = models.DateField(auto_now_add=True)
+    metadata_store = models.TextField(blank=True)
+
+    @property
+    def metadata(self):
+        return json.loads(self.metadata_store) if self.metadata_store else {}
+
+    @metadata.setter
+    def metadata(self, value):
+        self.metadata_store = json.dumps(value) if value else json.dumps({})
 
     @property
     def tasks(self):
         return Task.objects.filter(workflow=self).order_by('name')
+
+    def __str__(self):
+        return self.name
 
 
 class Task(models.Model):
@@ -96,3 +109,6 @@ class Task(models.Model):
     @property
     def template(self):
         return 'components/task-{}.html'.format(self.category.lower())
+
+    def __str__(self):
+        return self.name

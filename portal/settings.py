@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from concierge import DEFAULT_CONCIERGE_SERVER
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +27,10 @@ SECRET_KEY = 'use `openssl rand -hex 32` in local_settings.py in prod'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+WES_API = 'https://nihcommons.globusgenomics.org/wes/'
+JUPYTERHUB_STAGING = '5b552e84-7ae7-11e8-9443-0a6d4e044368'
+CONCIERGE_SERVER = DEFAULT_CONCIERGE_SERVER
 
 PROJECT_TITLE = 'FAIR Research Data Portal'
 
@@ -67,7 +72,8 @@ SEARCH_MAPPER = ('portal.search', 'general_mapper')
 
 SOCIAL_AUTH_GLOBUS_SCOPE = [
     'urn:globus:auth:scope:search.api.globus.org:search',
-    'urn:globus:auth:scope:transfer.api.globus.org:all',
+    'https://auth.globus.org/scopes/'
+        '524361f2-e4a9-4bd0-a3a6-03e365cac8a9/concierge',
     'https://auth.globus.org/scopes/7ff68ee3-d931-4551-8f48-17964bda620e/gg',
     'https://auth.globus.org/scopes/identifiers.globus.org/view',
     # 'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'

@@ -1,7 +1,9 @@
 
 import logging
 import requests
+from django.conf import settings
 from concierge.api import stage_bag
+import concierge
 
 from globus_portal_framework import (load_globus_access_token,
                                      load_transfer_client)
@@ -25,7 +27,7 @@ TASK_ERROR = 'ERROR'
 
 TASK_TASK_NAMES = {
     # TASK_GLOBUS_GENOMICS: 'Globus Genomics',
-    # TASK_JUPYTERHUB: 'Jupyterhub'
+    TASK_JUPYTERHUB: 'Jupyterhub',
     TASK_WES: 'Workflow Execution Service'
 }
 
@@ -100,7 +102,7 @@ class Task:
 
 class WesTask(Task):
 
-    WES_API = 'https://nihcommons.globusgenomics.org/wes/'
+    WES_API = settings.WES_API
     WORKFLOWS = 'workflows'
     SUBMISSION_JSON = {
     'workflow_descriptor': 'string',
@@ -195,7 +197,7 @@ class WesTask(Task):
             data = self.data
             url = '{}{}/{}'.format(self.WES_API, self.WORKFLOWS,
                                    job_id)
-            log.debug('Querying {}'.format(url))
+            log.debug('Delete sent to {}'.format(url))
             r = requests.delete(url, headers=self.auth_header())
             try:
                 data['stop'] = r.json()
@@ -256,13 +258,10 @@ class GlobusGenomicsTask(Task):
 
 class JupyterhubTask(Task):
 
-    STAGING_EP = '5b552e84-7ae7-11e8-9443-0a6d4e044368'
-
     def start(self):
         if self.status == TASK_READY:
-            at = load_globus_access_token(self.task.user, 'auth.globus.org')
-            tt = load_globus_access_token(self.task.user,
-                                          'transfer.api.globus.org')
+            token = load_globus_access_token(self.task.user,
+                '524361f2-e4a9-4bd0-a3a6-03e365cac8a9')
             input = self.task.input.all()
             if len(input) > 1:
                 raise TaskException('badinput', 'More than one Minid '
@@ -270,21 +269,21 @@ class JupyterhubTask(Task):
             minid = input[0]
             staging_loc = '/{}'.format(
                 self.task.user.username.split('@', 1)[0])
-            self.data = stage_bag(minid.id, self.STAGING_EP, at, staging_loc,
-                                  transfer_token=tt)
-            self.status = TASK_RUNNING
-            # self.data = {'error': 'Jupyterhub is not running.'}
-            # self.status = TASK_ERROR
-
-            return
+            try:
+                self.data = stage_bag(minid.id, settings.JUPYTERHUB_STAGING,
+                                      token, prefix=staging_loc,
+                                      server=settings.CONCIERGE_SERVER)
+                self.status = TASK_RUNNING
+            except concierge.exc.LoginRequired:
+                self.data = {'error': 'Token expired, please login again.'}
+            except Exception as e:
+                log.exception(e)
+                log.error('Failed to start transfer for {}'
+                          ''.format(self.task.user))
 
     def info(self):
         if self.status == TASK_RUNNING:
             update = requests.get(self.data['url']).json()
-            # log.debug(update.json())
-            taskids = update.get('transfer_task_ids')
-            tc = load_transfer_client(self.task.user)
-            task_infos = [tc.get_task(t) for t in taskids]
-            statuses = [t['status'] for t in task_infos]
-            if all([s == 'SUCCEEDED' for s in statuses]):
+            self.data = update
+            if update.get('status') == 'SUCCEEDED':
                 self.status = TASK_COMPLETE
