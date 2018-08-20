@@ -270,7 +270,7 @@ class JupyterhubTask(Task):
             staging_loc = '/{}'.format(
                 self.task.user.username.split('@', 1)[0])
             try:
-                self.data = stage_bag(minid.id, settings.JUPYTERHUB_STAGING,
+                self.data = stage_bag([minid.id], settings.JUPYTERHUB_STAGING,
                                       token, prefix=staging_loc,
                                       server=settings.CONCIERGE_SERVER)
                 self.status = TASK_RUNNING
