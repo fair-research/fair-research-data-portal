@@ -15,7 +15,10 @@ def _task_list_response(tasks):
     for task in tasks:
         active_tasks.append({
             'id': task.id,
-            'status': task.status
+            'status': task.status,
+            'display_category': task.display_category,
+            'input': task.input_metadata,
+            'output': task.output_metadata,
         })
 
     response_data = json.dumps({

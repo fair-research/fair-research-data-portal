@@ -32,12 +32,32 @@ function is_frozen(taskid) {
     return frozen_tasks.indexOf(taskid) >= 0
 }
 
+function task_metadata(task_metadata) {
+    console.log(task_metadata);
+    if (task_metadata == null) {
+        return '<a>--</a>'
+    }
+    if (task_metadata.type == 'minid') {
+        return '<a target="blank" href=' + task_metadata.link + ' + >' + task_metadata.title + '</a>'
+    }
+    if (task_metadata.type == 'link') {
+        return '<a target="blank" href=' + task_metadata.link + ' + >' + task_metadata.title + '</a>'
+    }
+}
+
 function update_local_task(task) {
     console.log("UPDATING TASK: ", task)
     task_id = 'div#task-' + task.id;
     button_id = 'button#task-button-' + task.id;
     $(task_id).text(task.status);
-    console.log('BUTTON: ', task)
+    $('div#task-display-category-' + task.id).text(task.display_category);
+
+
+    $('div#task-input-' + task.id).empty();
+    $('div#task-input-' + task.id).append(task_metadata(task.input));
+
+    $('div#task-output-' + task.id).empty();
+    $('div#task-output-' + task.id).append(task_metadata(task.output));
     if (task.status == 'READY') {
         $(button_id).prop('disabled', false);
     } else {

@@ -221,12 +221,13 @@ def profile(request):
 @login_required
 def workflow_delete(request):
     if request.method == 'POST':
-        r = Workflow.objects.filter(id=request.POST.get('id'),
+        w = Workflow.objects.filter(id=request.POST.get('id'),
                                     user=request.user).first()
-        if r:
-            for t in r.tasks:
-                t.stop()
-            r.delete()
+        if w:
+            for t in w.tasks:
+                if t.status == TASK_RUNNING:
+                    t.stop()
+            w.delete()
             messages.info(request, 'Your workspace has been deleted')
     return redirect('workflows')
 
@@ -300,10 +301,17 @@ def workflows(request):
                      status=TASK_WAITING)
             j.save()
 
+    grouped_wfs = {}
+    for w in Workflow.objects.filter(user=request.user):
+        group = w.metadata.get('assignment', 'ungrouped')
+        gwfs = grouped_wfs.get(group, [])
+        gwfs.append(w)
+        grouped_wfs[group] = gwfs
 
-    active_tasks = [{'id':t.id} for t in Task.objects.filter(user=request.user)]
+    active_tasks = [{'id':t.id}
+                    for t in Task.objects.filter(user=request.user)]
     context = {'bags': Minid.objects.filter(users=request.user),
-               'workflows': Workflow.objects.filter(user=request.user),
+               'workflows': grouped_wfs,
                'profile': Profile.objects.filter(user=request.user).first(),
                'active_tasks': json.dumps(active_tasks)
                }

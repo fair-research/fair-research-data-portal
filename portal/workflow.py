@@ -28,7 +28,7 @@ TASK_ERROR = 'ERROR'
 TASK_TASK_NAMES = {
     # TASK_GLOBUS_GENOMICS: 'Globus Genomics',
     TASK_JUPYTERHUB: 'Jupyterhub',
-    TASK_WES: 'Workflow Execution Service'
+    TASK_WES: 'WES'
 }
 
 TASK_STATUS_NAMES = {
@@ -98,6 +98,21 @@ class Task:
     def data(self, value):
         self.task.data = value
         self.task.save()
+
+    @staticmethod
+    def minid_metadata(minid):
+        if minid:
+            return {'type': 'minid', 'link': minid.landing_page,
+                    'title': minid.description}
+        return None
+
+    @property
+    def input_metadata(self):
+        return self.minid_metadata(self.task.input.all().first() or None)
+
+    @property
+    def output_metadata(self):
+        return self.minid_metadata(self.task.output.all().first() or None)
 
 
 class WesTask(Task):
@@ -256,6 +271,8 @@ class GlobusGenomicsTask(Task):
             self.status = TASK_ERROR
 
 
+
+
 class JupyterhubTask(Task):
 
     def start(self):
@@ -287,3 +304,14 @@ class JupyterhubTask(Task):
             self.data = update
             if update.get('status') == 'SUCCEEDED':
                 self.status = TASK_COMPLETE
+                self.task.output.add(self.task.input.all().first())
+
+    def stop(self):
+        pass
+
+    @property
+    def output_metadata(self):
+        if self.status == TASK_COMPLETE:
+            return {'type': 'link',
+                    'link': 'https://jupyterhub.fair-research.org',
+                    'title': 'Transfer Location'}

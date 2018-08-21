@@ -1,0 +1,7 @@
+{% if task_metadata.type == 'minid' %}
+<a target="blank" href="{{task_metadata.data.landing_page}}">{{task_metadata.data.id}}</a>
+{% elif task_metadata.type == 'link' %}
+<a target="blank" href="{{task_metadata.link}}">{{task_metadata.title}}</a>
+{% else %}
+--
+{% endif %}

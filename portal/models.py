@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 
 from globus_portal_framework.search.models import Minid
 
-from portal.workflow import (TASK_TASK_NAMES, TASK_STATUS_NAMES,
-                             resolve_task, TASK_ERROR, TaskException)
+from portal.workflow import (
+    TASK_WAITING, TASK_READY, TASK_RUNNING, TASK_COMPLETE, TASK_ERROR,
+    TASK_TASK_NAMES, TASK_STATUS_NAMES,
+    resolve_task, TaskException
+)
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +41,27 @@ class Workflow(models.Model):
 
     @property
     def tasks(self):
-        return Task.objects.filter(workflow=self).order_by('name')
+        return Task.objects.filter(workflow=self).order_by('id')
+
+    @property
+    def current_task(self):
+        tasks = list(self.tasks)
+
+        for task in tasks:
+            if task.status in [TASK_READY, TASK_RUNNING, TASK_ERROR]:
+                return task
+            if (task.status == TASK_COMPLETE and
+                tasks.index(task) + 1 == len(tasks)):
+                return task
+            else:
+                log.debug('Task {} completed, but is {} of {} so not active. '
+                          'Skipping...'.format(
+                    task.category, tasks.index(task) + 1, len(tasks)
+                ))
+                continue
+
+        log.error('No task is active for workspace {} user {}'
+                  ''.format(self.user, self))
 
     def __str__(self):
         return self.name
@@ -105,6 +128,18 @@ class Task(models.Model):
     @property
     def task(self):
         return resolve_task(self)
+
+    @property
+    def input_metadata(self):
+        return self.task.input_metadata
+
+    @property
+    def output_metadata(self):
+        return self.task.output_metadata
+
+    @property
+    def display_category(self):
+        return TASK_TASK_NAMES[self.category]
 
     @property
     def template(self):
