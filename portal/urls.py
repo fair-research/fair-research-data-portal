@@ -45,5 +45,7 @@ urlpatterns = [
     path('', landing_page, name='landing-page'),
     #path('search', include('globus_portal_framework.search.urls'), name='landing-page')
     # path('', landing_page, name='landing_page')
-    path(settings.SERVER_URL, include(main_site))
+    path(settings.SERVER_URL, include(main_site)),
+    path('workspaces/', lambda r: redirect(reverse('workspaces'))),
+    path('search/', lambda r: redirect(reverse('search'))),
 ]
