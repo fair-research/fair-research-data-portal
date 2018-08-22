@@ -1,0 +1,207 @@
+[
+    {
+        "Argon_GUID": "ark:/99999/fk4U4TyRAKafWMB",
+        "HapMap_1000G_ID": "NA19238",
+        "NWD_ID": "NWD176325",
+        "SEQ_CTR": "Broad",
+        "crai": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD176325.0005.recab.cram.crai",
+            "CRAI_URL": "crai",
+            "Calcium_GUID": "dg.4503/e6961203-1a04-4136-98dc-b5780d85a3fc",
+            "Calcium_realigned_md5sum": "",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/e6961203-1a04-4136-98dc-b5780d85a3fc?version=2018-06-13T172401.521529Z",
+            "File size": "5802",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD176325.0005.recab.cram.crai",
+            "md5sum": "255b366c3ae601b6c14e2269ec5b31f9"
+        },
+        "cram": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD176325.0005.recab.cram",
+            "CRAI_URL": "cram",
+            "Calcium_GUID": "dg.4503/00e6cfa9-a183-42f6-bb44-b70347106bbe",
+            "Calcium_realigned_md5sum": "186d2cdf1efdc2746e6d3b26cd887c0a",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/00e6cfa9-a183-42f6-bb44-b70347106bbe?version=2018-06-13T171629.981618Z",
+            "File size": "9567026",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD176325.0005.recab.cram",
+            "md5sum": "4fe23cf4c6bdcf930df5765b48d81216"
+        },
+        "remote_file_manifest": [
+            {
+                "filename": "NWD176325.0005.recab.cram",
+                "length": 9567026,
+                "md5": "4fe23cf4c6bdcf930df5765b48d81216",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD176325.0005.recab.cram"
+            },
+            {
+                "filename": "NWD176325.0005.recab.cram.crai",
+                "length": 5802,
+                "md5": "255b366c3ae601b6c14e2269ec5b31f9",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD176325.0005.recab.cram.crai"
+            }
+        ],
+        "test_data": "downsampled"
+    },
+    {
+        "Argon_GUID": "ark:/99999/fk41FSiqz9iY58R1",
+        "HapMap_1000G_ID": "HG01249",
+        "NWD_ID": "NWD315403",
+        "SEQ_CTR": "UW",
+        "crai": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD315403.0005.recab.cram.crai",
+            "CRAI_URL": "crai",
+            "Calcium_GUID": "dg.4503/a5d79375-1ba8-418f-9dda-eb981375e516",
+            "Calcium_realigned_md5sum": "",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/a5d79375-1ba8-418f-9dda-eb981375e516?version=2018-06-22T170021.428857Z",
+            "File size": "6053",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD315403.0005.recab.cram.crai",
+            "md5sum": "97c1b3f322e3ed3168f8bf737fdfce60"
+        },
+        "cram": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD315403.0005.recab.cram",
+            "CRAI_URL": "cram",
+            "Calcium_GUID": "dg.4503/0e1c8c39-bfb2-4acf-8d4f-ffd40470f04e",
+            "Calcium_realigned_md5sum": "efda0cdef1e172f495052a62a93d799c",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/0e1c8c39-bfb2-4acf-8d4f-ffd40470f04e?version=2018-06-22T165741.262727Z",
+            "File size": "10089378",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD315403.0005.recab.cram",
+            "md5sum": "a3258ec996ae3c343bbff4640360f7bd"
+        },
+        "remote_file_manifest": [
+            {
+                "filename": "NWD315403.0005.recab.cram",
+                "length": 10089378,
+                "md5": "a3258ec996ae3c343bbff4640360f7bd",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD315403.0005.recab.cram"
+            },
+            {
+                "filename": "NWD315403.0005.recab.cram.crai",
+                "length": 6053,
+                "md5": "97c1b3f322e3ed3168f8bf737fdfce60",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD315403.0005.recab.cram.crai"
+            }
+        ],
+        "test_data": "downsampled"
+    },
+    {
+        "Argon_GUID": "ark:/99999/fk456x1jMoFxfKB",
+        "HapMap_1000G_ID": "HG01110",
+        "NWD_ID": "NWD136397",
+        "SEQ_CTR": "NYGC",
+        "crai": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD136397.0005.recab.cram.crai",
+            "CRAI_URL": "crai",
+            "Calcium_GUID": "dg.4503/7bdb5961-27d5-40ef-bf15-bdf470b8f412",
+            "Calcium_realigned_md5sum": "",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/7bdb5961-27d5-40ef-bf15-bdf470b8f412?version=2018-06-22T170021.307011Z",
+            "File size": "6637",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD136397.0005.recab.cram.crai",
+            "md5sum": "a1d7262ff887f44b355b69dc774d60d6"
+        },
+        "cram": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD136397.0005.recab.cram",
+            "CRAI_URL": "cram",
+            "Calcium_GUID": "dg.4503/376874ef-2df8-41b1-9681-b08cc25d82c3",
+            "Calcium_realigned_md5sum": "c8bab3ba0f90406a035cabb243716356",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/376874ef-2df8-41b1-9681-b08cc25d82c3?version=2018-06-22T165741.128178Z",
+            "File size": "11838201",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD136397.0005.recab.cram",
+            "md5sum": "bbc6e6e8bd69276b7db5c09c2a1360e9"
+        },
+        "remote_file_manifest": [
+            {
+                "filename": "NWD136397.0005.recab.cram",
+                "length": 11838201,
+                "md5": "bbc6e6e8bd69276b7db5c09c2a1360e9",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD136397.0005.recab.cram"
+            },
+            {
+                "filename": "NWD136397.0005.recab.cram.crai",
+                "length": 6637,
+                "md5": "a1d7262ff887f44b355b69dc774d60d6",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD136397.0005.recab.cram.crai"
+            }
+        ],
+        "test_data": "downsampled"
+    },
+    {
+        "Argon_GUID": "ark:/99999/fk4jVBacAVBkFsL",
+        "HapMap_1000G_ID": "HG01111",
+        "NWD_ID": "NWD231092",
+        "SEQ_CTR": "UW",
+        "crai": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD231092.0005.recab.cram.crai",
+            "CRAI_URL": "crai",
+            "Calcium_GUID": "dg.4503/c06232ff-f4cd-42d2-ba6e-2cdad82cb7cb",
+            "Calcium_realigned_md5sum": "",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/c06232ff-f4cd-42d2-ba6e-2cdad82cb7cb?version=2018-06-22T170021.367173Z",
+            "File size": "5618",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD231092.0005.recab.cram.crai",
+            "md5sum": "68b8b8e433a57b9b8ac260d5ead1decf"
+        },
+        "cram": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD231092.0005.recab.cram",
+            "CRAI_URL": "cram",
+            "Calcium_GUID": "dg.4503/33ceb094-68f0-4aed-8fd2-c1f3ff169254",
+            "Calcium_realigned_md5sum": "4ac1e5edc1fd9d0644d2c0082ac02392",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/33ceb094-68f0-4aed-8fd2-c1f3ff169254?version=2018-06-22T165741.199598Z",
+            "File size": "8843282",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD231092.0005.recab.cram",
+            "md5sum": "785c3fc4497e7bb3b7273ddd17071d68"
+        },
+        "remote_file_manifest": [
+            {
+                "filename": "NWD231092.0005.recab.cram",
+                "length": 8843282,
+                "md5": "785c3fc4497e7bb3b7273ddd17071d68",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD231092.0005.recab.cram"
+            },
+            {
+                "filename": "NWD231092.0005.recab.cram.crai",
+                "length": 5618,
+                "md5": "68b8b8e433a57b9b8ac260d5ead1decf",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD231092.0005.recab.cram.crai"
+            }
+        ],
+        "test_data": "downsampled"
+    },
+    {
+        "Argon_GUID": "ark:/99999/fk4cAzlMXIUOfes",
+        "HapMap_1000G_ID": "NA12878",
+        "NWD_ID": "NWD119836",
+        "SEQ_CTR": "NYGC",
+        "crai": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD119836.0005.recab.cram.crai",
+            "CRAI_URL": "crai",
+            "Calcium_GUID": "dg.4503/854b861f-ebf2-45a6-adb0-b3b5a8fb7e0a",
+            "Calcium_realigned_md5sum": "",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/854b861f-ebf2-45a6-adb0-b3b5a8fb7e0a?version=2018-06-22T170021.244873Z",
+            "File size": "5815",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD119836.0005.recab.cram.crai",
+            "md5sum": "f8c90ddf0c8f8b30d0aec4e76524344e"
+        },
+        "cram": {
+            "AWS_URL": "s3://topmed-workflow-testing/topmed-aligner/input-files/NWD119836.0005.recab.cram",
+            "CRAI_URL": "cram",
+            "Calcium_GUID": "dg.4503/bba53290-a870-442e-a03b-1ccb857b1894",
+            "Calcium_realigned_md5sum": "105bf65c2e4ea23f7a110bee17c1a074",
+            "DOS_URI": "dos://dos-dss.ucsc-cgp-dev.org/bba53290-a870-442e-a03b-1ccb857b1894?version=2018-06-22T165741.036036Z",
+            "File size": "11274449",
+            "Google_URL": "gs://topmed_workflow_testing/topmed_aligner/input_files/NWD119836.0005.recab.cram",
+            "md5sum": "b68a9e521625063adc4c7b1b453a97af"
+        },
+        "remote_file_manifest": [
+            {
+                "filename": "NWD119836.0005.recab.cram",
+                "length": 11274449,
+                "md5": "b68a9e521625063adc4c7b1b453a97af",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD119836.0005.recab.cram"
+            },
+            {
+                "filename": "NWD119836.0005.recab.cram.crai",
+                "length": 5815,
+                "md5": "f8c90ddf0c8f8b30d0aec4e76524344e",
+                "url": "https://topmed-workflow-testing.s3.amazonaws.com/topmed-aligner/input-files/NWD119836.0005.recab.cram.crai"
+            }
+        ],
+        "test_data": "downsampled"
+    }
+]
