@@ -31,8 +31,9 @@ class ExpiredTokenMiddleware(MiddlewareMixin):
             auth.logout(request)
             # build /login/globus/?next=/my-intended-url/'
             path = os.path.join(settings.SERVER_URL, request.path)
-            url = '{}{}/?{}'.format(reverse('login'),
-                                    self.PROVIDER,
-                                    urlencode({'next': path})
-                                    )
+            url = '/{}{}{}/?{}'.format(setting.SERVER_URL,
+                                      reverse('login'),
+                                      self.PROVIDER,
+                                      urlencode({'next': path})
+                                      )
             return HttpResponseRedirect(url)

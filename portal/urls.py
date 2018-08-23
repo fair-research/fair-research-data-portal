@@ -41,11 +41,15 @@ main_site = [
 
 ]
 
+# I can't get this thing working properly the right way, make it work!
+base_workspace_redirect_url = ('/4M.4.Fullstacks/login/globus?next='
+                               '/4M.4.Fullstacks/workspaces/')
+
 urlpatterns = [
     path('', landing_page, name='landing-page'),
     #path('search', include('globus_portal_framework.search.urls'), name='landing-page')
     # path('', landing_page, name='landing_page')
     path(settings.SERVER_URL, include(main_site)),
-    path('workspaces/', lambda r: redirect(reverse('workspaces'))),
+    path('workspaces/', lambda r: redirect(base_workspace_redirect_url)),
     path('search/', lambda r: redirect(reverse('search'))),
 ]

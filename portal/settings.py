@@ -112,8 +112,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
-    'portal.middleware.ExpiredTokenMiddleware',
-
+    # 'portal.middleware.ExpiredTokenMiddleware',
+    'globus_portal_framework.middleware.ExpiredTokenMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
