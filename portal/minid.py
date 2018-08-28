@@ -36,7 +36,7 @@ def add_minid(user, minid):
         # if not r.get(minid):
         #     raise ValueError('Could not find Minid: {}'.format(minid))
         log.debug(minid_data)
-        t = minid_data['metadata'].get('Title', minid_data['identifier'])
+        t = minid_data['metadata'].get('title', minid_data['identifier'])
     else:
         r = minid_client_api.get_entities(MINID_SERVER, minid, False)
         if not r.get(minid):
