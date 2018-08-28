@@ -18,7 +18,7 @@ from globus_portal_framework import post_search, load_globus_access_token
 
 
 
-from concierge.api import create_bag
+from concierge.api import bag_create
 
 from portal.models import Task, Workflow, Profile
 from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
@@ -153,7 +153,7 @@ def bag_create(request):
             # resp = create_bag('http://localhost:8080', manifests,
             #                    request.user.get_full_name(), request.user.email,
             #                    bag_title, tok)
-            resp = create_bag('https://concierge.fair-research.org', manifests,
+            resp = bag_create('https://concierge.fair-research.org', manifests,
                                request.user.get_full_name(), request.user.email,
                                bag_title, tok)
             minid = Minid(id=resp['minid_id'], description=bag_title)
