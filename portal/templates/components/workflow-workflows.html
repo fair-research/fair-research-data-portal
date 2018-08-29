@@ -6,97 +6,64 @@
       </div>
       <div class="col-5"></div>
       <div class="col-1">
-        <!--<form method="post" action="{% url 'workflow-delete' %}">-->
-        <!--{% csrf_token %}-->
-        <!--<input type="hidden" id="{{workflow.id}}" name="id" value="{{workflow.id}}">-->
-        <!--<button type="submit" class="btn btn-secondary">-->
-            <!--<i class="fa fa-trash "></i>-->
-        <!--</button>-->
-        <!--</form>-->
       </div>
     </div>
   </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">
-    <div class="row">
-      <div class="col-2">Task Name</div>
-      <div class="col-2">Task Input</div>
-      <div class="col-2">Task Output</div>
-      <div class="col-2">Task Type</div>
-      <div class="col-2">Status</div>
-      <div class="col-2"></div>
-    </div>
-  </li>
-  {% for workflow in wf_group %}
-    {% with task=workflow.current_task %}
-  <li class="list-group-item">
-    <div class="row">
-      <div class="col-1">
-        <p class="text-center">
-        {{workflow.metadata.seq}}<br>
-        </p>
-      </div>
-      <div class="col-1">
-        <button class="btn btn-secondary btn-sm mb-0 py-0" type="button" data-toggle="collapse" data-target="#task-collapse-{{task.id}}" aria-expanded="false" aria-controls="collapseExample">
-          Info
-        </button>
-      </div>
-      <div id="task-input-{{task.id}}" class="col-2">
-        {% with task_metadata=task.input_metadata %}
-          {% include 'components/task-input-output-metadata.html' %}
-        {% endwith%}
-      </div>
-      <div id="task-output-{{task.id}}" class="col-2">
-        {% with task_metadata=task.output_metadata %}
-          {% include 'components/task-input-output-metadata.html' %}
-        {% endwith%}
-      </div>
-      <div id="task-display-category-{{task.id}}" class="col-2">
-        {{task.display_category}}
-      </div>
-      <div id="task-{{task.id}}" class="col-2">
-        {{task.status}}
-      </div>
-      <div class="col-1">
-        <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
-      </div>
-      <div class="col-1">
-        <form method="post" action="{% url 'workflow-delete' %}">
-        {% csrf_token %}
-        <input type="hidden" id="{{workflow.id}}" name="id" value="{{workflow.id}}">
-        <button type="submit" class="btn btn-secondary">
-            <i class="fa fa-trash "></i>
-        </button>
-        </form>
-      </div>
-    </div>
-    <div class="collapse" id="task-collapse-{{task.id}}">
-      <div class="row"><div class="col-1"></div><div class="col-10"><hr></div><div class="col-1"></div></div>
-      <div class="card card-body">
-        <h3 class="text-center">Workspace Task Details</h3>
 
-      {% for task in workflow.tasks %}
-        <h5>{{task.name}}</h5>
-        <ul>
-          <li>Task: {{task.name}}</li>
-          <li>Input: <a target="blank" href="{{task.input.all.first.landing_page}}">{{task.input.all.first.id}}</a> -- {{task.input.all.first.description}}</li>
-          <li>Output: <a target="blank" href="{{task.output.all.first.landing_page}}">{{task.output.all.first.id}}</a> -- {{task.output.all.first.description}}</li>
-          <li>Status: {{task.status}}</li>
-          <li><a href="{% url 'task' task.id %}">Additional Task Info</a></li>
-        </ul>
-
-        {% if not forloop.last %}
-        <div class="row"><div class="col-5"></div><div class="col-2"><hr></div><div class="col-5"></div></div>
-        {% endif %}
-
+  <div class="table-responsive table-bordered">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Task Name</th>
+          <th>Task Type</th>
+          <th>Task Input</th>
+          <th>Task Output</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for workflow in wf_group %}
+        <tr>
+          <td rowspan="2">
+            {{workflow.metadata.seq}}
+          </td>
+        {% for task in workflow.tasks %}
+          <td>{{task.display_category}}</td>
+          <td>
+            <div id="task-input-{{task.id}}">
+              <a target="blank" href="{{task.input_metadata.link}}">{{task.input_metadata.title}}</a>
+            </div>
+          </td>
+          <td>
+            <div id="task-output-{{task.id}}">
+              <a target="blank" href="{{task.ouput_metadata.link}}">{{task.output_metadata.title}}</a>
+            </div>
+          </td>
+          <td>{{task.status}}</td>
+          {% if forloop.first %}
+          <td rowspan="2">
+            <div class="row">
+              <div class="col-6">
+                <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
+              </div>
+              <div class="col-6">
+                <form method="post" action="{% url 'workflow-delete' %}">
+                {% csrf_token %}
+                <input type="hidden" id="{{workflow.id}}" name="id" value="{{workflow.id}}">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-trash "></i>
+                </button>
+                </form>
+              </div>
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
       {% endfor %}
-      </div>
-    </div>
-  </li>
-    {% endwith%}
-  {% endfor %}
-  </ul>
-
-
+      </tbody>
+    </table>
+  </div>
 
 </div>
