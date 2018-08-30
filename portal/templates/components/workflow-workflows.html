@@ -26,7 +26,7 @@
       {% for workflow in wf_group %}
         <tr>
           <td rowspan="2">
-            {{workflow.metadata.seq}}
+            {{workflow.metadata.seq}}/{{workflow.metadata.nwdid}}
           </td>
         {% for task in workflow.tasks %}
           <td><a href="{% url 'task' task.id %}">{{task.display_category}}</a></td>
