@@ -21,19 +21,6 @@
     </div>
 </div>
 
-{% if not identity_not_set %}
-<div class="container mt-3">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-warning" role="alert">
-              Your email "{{request.user.email}}" has not been linked for your Globus Identity. You will need to
-              <a href="https://www.globus.org/app/account" target="_blank"> update your profile</a> before continuing.
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
 {%block detail_messages %}
 <div class="container my-3">
     {%include "components/messages.html"%}
@@ -53,7 +40,7 @@
 
         <div class="card-body">
             <div class="container">
-              <form method="post" action="{% url 'bag-create'%}">
+              <form method="post" action="{% url 'portal-bag-create'%}">
                 {% csrf_token %}
                 <h5>Create a BDBag with data contained in the following search results.
                 After you create a bag you can stage the data on remote services for processing. All BDBags are tracked with Minids.</h5>

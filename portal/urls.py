@@ -26,7 +26,7 @@ general = [
     path('workspaces/', workflows, name='workspaces'),
     path('workflows/', lambda x: redirect(reverse('workspaces')),
          name='workflows'),
-    path('bags/create/', bag_create, name='bag-create'),
+    path('bags/create/', bag_create, name='portal-bag-create'),
 
     # path('search/bags/create/', bag_create, name='bag-create'),
     path('workflow/delete', workflow_delete, name='workflow-delete'),
@@ -43,7 +43,6 @@ general = [
 urlpatterns = [
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
-    # path()
     path('' + 'api/v1/', include(apipatterns)),
     path('', include(general)),
     path('search/', include('globus_portal_framework.search.urls'),

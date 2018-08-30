@@ -19,7 +19,7 @@ from globus_portal_framework import post_search, load_globus_access_token
 
 from globus_sdk import AuthClient, AccessTokenAuthorizer
 
-from concierge.api import bag_create
+import concierge
 
 from portal.models import Task, Workflow, Profile
 from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
@@ -107,41 +107,50 @@ def bag_create(request):
 
 
         manifest = [b for b in can_bags if b['url'] in rfm_urls]
-        # c_scope = '524361f2-e4a9-4bd0-a3a6-03e365cac8a9'
-        # tok = load_globus_access_token(request.user, c_scope)
-        tok = load_globus_access_token(request.user, 'auth.globus.org')
+        tok = load_globus_access_token(request.user,
+                                       '524361f2-e4a9-4bd0-a3a6-03e365cac8a9')
         try:
             log.debug('Creating minid with: {}'.format(profile.minid_email))
-            resp = bag_create(manifest, tok, minid_test=settings.MINID_TEST)
-            minid = Minid(id=resp['minid'], description=bag_title)
-            minid.save()
-            minid.users.add(request.user)
-            messages.info(request, 'Your bag {} has been created with {} files.'
-                                   ''.format(minid.id, len(manifests)))
-            return redirect('bag-list')
+            resp = concierge.api.bag_create(manifest, tok,
+                                            minid_test=settings.TEST_MINIDS,
+                                            minid_metadata={'title':bag_title},
+                                            bag_name='')
+            minid = add_minid(request.user, resp['minid'])
+            messages.info(request, 'Your bag {} has been created with {} files'
+                                   '.'.format(minid, len(manifest)))
+            return redirect('workspaces')
         except Exception as e:
-            log.error(e)
+            log.exception(e)
         messages.error(request, 'There was an error creating your bag, ensure your'
                                 ' minid email has been set correctly.')
         log.debug(request.session.get('search_query'))
-        return redirect(reverse('bag-create') + '?' + request.session.get('search_query'))
+        return redirect(reverse('portal-bag-create') + '?' + request.session.get('search_query'))
 
 
 @login_required
 def bag_add(request):
     if request.method == 'POST':
         minid = request.POST.get('minid')
+        if not minid.startswith('ark:/'):
+            messages.error(request, 'The minid "{}" is not valid!'
+                                    ''.format(minid))
+            return redirect('workspaces')
 
         m = Minid.objects.filter(id=minid, users=request.user).first()
         if m:
             messages.info(request, 'Your minid has already been added.')
         else:
             new_min = add_minid(request.user, minid)
-            messages.info(request, '"{}" has been added.'.format(
-                new_min.description))
-            log.debug('User {} added a new bag {}'.format(request.user,
-                                                          new_min))
-    return redirect('workflows')
+            if new_min:
+                messages.info(request, '"{}" has been added.'.format(
+                    new_min.description))
+                log.debug('User {} added a new bag {}'.format(request.user,
+                                                              new_min))
+            else:
+                messages.error(request, 'Minid does not exist {}'.format(
+                               minid))
+                log.debug('Could not find minid for user: {}'.format(minid))
+    return redirect('workspaces')
 
 
 @login_required

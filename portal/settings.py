@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-# from django.urls import reverse
+from concierge import DEFAULT_CONCIERGE_SERVER
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +28,10 @@ SECRET_KEY = 'use `openssl rand -hex 32` in local_settings.py in prod'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+JUPYTERHUB_STAGING = '5b552e84-7ae7-11e8-9443-0a6d4e044368'
+CONCIERGE_SERVER = DEFAULT_CONCIERGE_SERVER
+TEST_MINIDS = False
+
 PROJECT_TITLE = 'FAIR Research Data Portal'
 
 # Perf data index for example only. Change to your index when you're ready
@@ -38,25 +42,13 @@ LOGIN_URL = '/login/globus/'
 # Set to '/3M.5.Fullstacks/' on server
 SERVER_URL = ''
 
-
-# def generate_fake_manifests(var):
-#     return [{
-#         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
-#         'length': 2000000,
-#         'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
-#         'filename': os.path.basename(
-#             var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'])
-#     }, {
-#         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'],
-#         'length': 2000000,
-#         'md5': 'd16474427330f7c0a71dcbaf1d2a7a89',
-#         'filename': os.path.basename(
-#             var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Reverse_path'])
-#         }]
-
 ENTRY_SERVICE_VARS = {
+    'globus_group': 'globus_group',
+    'globus_http_link': 'globus_http_link',
+    'globus_http_scope': 'globus_http_scope',
     'remote_file_manifest': None,
 }
+
 
 SEARCH_ENTRY_FIELD_PATH = ''
 SEARCH_SCHEMA = os.path.join(BASE_DIR, 'portal/search_schema.json')
@@ -65,7 +57,9 @@ SEARCH_MAPPER = ('portal.search', 'general_mapper')
 
 SOCIAL_AUTH_GLOBUS_SCOPE = [
     'urn:globus:auth:scope:search.api.globus.org:search',
-    'urn:globus:auth:scope:transfer.api.globus.org:all',
+    'https://auth.globus.org/scopes/'
+        '524361f2-e4a9-4bd0-a3a6-03e365cac8a9/concierge',
+    'https://auth.globus.org/scopes/identifiers.globus.org/view',
     # 'https://auth.globus.org/scopes/56ceac29-e98a-440a-a594-b41e7a084b62/all'
 ]
 
@@ -181,30 +175,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.'
-                'UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.'
-                'MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.'
-                'CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.'
-                'NumericPasswordValidator',
-    },
-]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

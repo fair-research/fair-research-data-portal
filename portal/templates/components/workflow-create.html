@@ -11,7 +11,7 @@
     </div>
     {% endif %}
 
-    <form id="workflow-form" action="{% url 'workflows' %}" method="post">
+    <form id="workflow-form" action="{% url 'workspaces' %}" method="post">
       {% csrf_token %}
       <div class="form-group">
         <select class="custom-select" id="bagInputSelect" name="input-bag">
