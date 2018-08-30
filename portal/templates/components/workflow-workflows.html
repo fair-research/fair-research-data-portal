@@ -29,7 +29,7 @@
             {{workflow.metadata.seq}}
           </td>
         {% for task in workflow.tasks %}
-          <td>{{task.display_category}}</td>
+          <td><a href="{% url 'task' task.id %}">{{task.display_category}}</a></td>
           <td>
             <div id="task-input-{{task.id}}">
               <a target="blank" href="{{task.input_metadata.link}}">{{task.input_metadata.title}}</a>
@@ -40,7 +40,11 @@
               <a target="blank" href="{{task.ouput_metadata.link}}">{{task.output_metadata.title}}</a>
             </div>
           </td>
-          <td>{{task.status}}</td>
+          <td>
+            <div id="task-status-{{task.id}}">
+              {{task.status}}
+            </div>
+          </td>
           {% if forloop.first %}
           <td rowspan="2">
             <div class="row">

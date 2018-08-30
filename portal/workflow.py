@@ -1,4 +1,4 @@
-
+import json
 import logging
 import requests
 from django.conf import settings
@@ -146,28 +146,40 @@ class WesTask(Task):
 
     def start(self):
         if self.status == TASK_READY:
-            input = self.task.input.all().first()
-            data = self.data
+            try:
+                input = self.task.input.all().first()
+                data = self.data
 
-            url = '{}{}'.format(self.WES_API, self.WORKFLOWS)
-            headers = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': load_globus_access_token(self.task.user,
-                                                          'commons')
-            }
-            payload = self.SUBMISSION_JSON.copy()
-            payload['workflow_params']['input_file']['path'] = input.id
-            r = requests.post(url, headers=headers, json=payload)
-            data['job_id'] = r.json()
+                url = '{}{}'.format(self.WES_API, self.WORKFLOWS)
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': load_globus_access_token(self.task.user,
+                                                              'commons')
+                }
+                payload = self.SUBMISSION_JSON.copy()
+                payload['workflow_params']['input_file']['path'] = input.id
+                log.debug('Start sent to {}'.format(url))
+                r = requests.post(url, headers=headers, json=payload)
+                data['job_id'] = r.json()
 
-            self.data = data
-            log.debug(self.data)
-            if not self.data.get('job_id'):
-                raise TaskException('ggtaskstartfail',
-                                    'No history id returned on start')
-            self.status = TASK_RUNNING
-            return
+                self.data = data
+                log.debug(self.data)
+                if not self.data.get('job_id'):
+                    raise TaskException('ggtaskstartfail',
+                                        'No history id returned on start')
+                self.status = TASK_RUNNING
+                return
+            except json.decoder.JSONDecodeError as jde:
+                log.exception(jde)
+                log.error(
+                    'User {} had error with task {}'.format(self.task.user,
+                                                            self.task.id))
+                self.status = TASK_ERROR
+                try:
+                    log.debug(r.text)
+                except:
+                    pass
 
     def info(self):
         try:

@@ -32,36 +32,33 @@ function is_frozen(taskid) {
     return frozen_tasks.indexOf(taskid) >= 0
 }
 
-function task_metadata(task_metadata) {
+function get_task_input_output(task_metadata) {
     console.log(task_metadata);
     if (task_metadata == null) {
         return '<a>--</a>'
-    }
-    if (task_metadata.type == 'minid') {
-        return '<a target="blank" href=' + task_metadata.link + ' + >' + task_metadata.title + '</a>'
-    }
-    if (task_metadata.type == 'link') {
+    } else {
         return '<a target="blank" href=' + task_metadata.link + ' + >' + task_metadata.title + '</a>'
     }
 }
 
 function update_local_task(task) {
     console.log("UPDATING TASK: ", task)
-    task_id = 'div#task-' + task.id;
-    button_id = 'button#task-button-' + task.id;
-    $(task_id).text(task.status);
+    $('div#task-status-' + task.id).text(task.status);
     $('div#task-display-category-' + task.id).text(task.display_category);
 
+    if (task.input != null) {
+        $('div#task-input-' + task.id).empty();
+        $('div#task-input-' + task.id).append(get_task_input_output(task.input));
+    }
 
-    $('div#task-input-' + task.id).empty();
-    $('div#task-input-' + task.id).append(task_metadata(task.input));
-
-    $('div#task-output-' + task.id).empty();
-    $('div#task-output-' + task.id).append(task_metadata(task.output));
+    if (task.output != null) {
+        $('div#task-output-' + task.id).empty();
+        $('div#task-output-' + task.id).append(get_task_input_output(task.output));
+    }
     if (task.status == 'READY') {
-        $(button_id).prop('disabled', false);
+        $('button#task-button-' + task.id).prop('disabled', false);
     } else {
-        $(button_id).prop('disabled', true);
+        $('button#task-button-' + task.id).prop('disabled', true);
     }
 }
 
