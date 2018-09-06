@@ -99,6 +99,9 @@ INSTALLED_APPS = [
     'globus_portal_framework.search',
     'social_django',
     'portal',  # Added explicitly here only for Django admin autodiscovery
+    'mp_auth',
+    'api',
+    'rest_framework',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -116,19 +119,37 @@ MIDDLEWARE = [
     'globus_portal_framework.middleware.ExpiredTokenMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'mp_auth.backends.mp.MultiproviderAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ()
+}
+
 AUTHENTICATION_BACKENDS = [
     'globus_portal_framework.auth.GlobusOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+MULTIPROVIDER_AUTH = {
+    "BearerTokens": {
+        "globus": {
+            "scope": [],
+            "aud": "fair_research_data_portal"
+        }
+    },
+    "JWT": {}
+}
 
 ROOT_URLCONF = 'portal.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'portal', 'templates'),
-        ],
+        # 'DIRS': [
+        #     os.path.join(BASE_DIR, 'portal', 'templates'),
+        # ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -172,6 +193,16 @@ LOGGING = {
             'propagate': True,
         },
         'portal': {
+            'handlers': ['stream'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'api': {
+            'handlers': ['stream'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'mp_auth': {
             'handlers': ['stream'],
             'level': 'DEBUG',
             'propagate': True,

@@ -3,12 +3,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect
 
-
 from portal.views import (intro_page, landing_page, bag_create, workflows,
                           tasks, bag_delete, bag_add, workflow_delete,
                           profile, task_detail, collect_minids, task_delete)
 
 from portal.api import task_start, update_tasks
+from api.urls import urlpatterns as api_urlpatterns
 
 apipatterns = [
     path('task/start/', task_start, name='task-start'),
@@ -22,6 +22,7 @@ main_site = [
     path('', include('social_django.urls')),
     path('', include('django.contrib.auth.urls')),
     path('api/v1/', include(apipatterns)),
+    path('api/v1/', include(api_urlpatterns)),
     path('profile/', profile, name='profile'),
     path('bags/', workflows, name='bag-list'),
     path('workspaces/', workflows, name='workspaces'),
