@@ -21,21 +21,24 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     input = MinidSerializer(many=True, read_only=True)
     output = MinidSerializer(many=True, read_only=True)
     category = serializers.CharField(read_only=True)
+    status = serializers.CharField(read_only=True)
     data = serializers.JSONField(read_only=True)
     workspace = serializers.HyperlinkedRelatedField(read_only=True,
                                                    view_name='workspace-detail')
 
     class Meta:
         model = Task
-        fields = ('id', 'url', 'category', 'workspace', 'data', 'input',
-                  'output')
+        fields = ('id', 'url', 'category', 'status', 'workspace', 'data',
+                  'input', 'output')
 
 
 class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Workspace
-        fields = ('metadata', 'input_minid', 'tasks')
+        fields = ('id', 'url', 'workspace', 'category', 'status',
+                  'current_task', 'metadata', 'input_minid', 'tasks',
+                  'autostart')
 
     task_type_h = ('Tasks to add to this workspace, as a JSON List. Example: '
                    '["WES", "JUPYTERHUB"]. Valid tasks are: {}'
@@ -44,12 +47,19 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
                      'in the list.')
     metadata_h = ('A dictionary object about the workspace. Suggested you '
                   'include: assignment, seq, nwdid')
+    autostart_h = 'Start first task on creation'
 
-    tasks = serializers.JSONField(write_only=True,
-                                           help_text=task_type_h)
+    workspace = serializers.HyperlinkedRelatedField(read_only=True,
+                                                   view_name='workspace-detail')
+    category = serializers.CharField(read_only=True)
+    status = serializers.CharField(read_only=True)
+    current_task = TaskSerializer(read_only=True)
+    tasks = serializers.JSONField(write_only=True, help_text=task_type_h,
+                                  default=['WES'])
     input_minid = serializers.CharField(write_only=True,
                                         help_text=input_minid_h)
-    metadata = serializers.JSONField(write_only=True, help_text=metadata_h)
+    metadata = serializers.JSONField(help_text=metadata_h)
+    autostart = serializers.BooleanField(help_text=autostart_h, required=False)
 
     def validate_metadata(self, metadata):
         if metadata is None or not isinstance(metadata, dict):
@@ -62,11 +72,11 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
         defaults.update(metadata)
         return defaults
 
-    def validate_workspace_tasks(self, tasks):
-        if not tasks:
-            tasks = [TASK_WES]
+    def validate_tasks(self, tasks):
         if not isinstance(tasks, list):
-            raise ValidationError('Wrong type, please add as a string')
+            raise ValidationError('Wrong type, please add tasks in a list.')
+        if not tasks:
+            raise ValidationError('Please add at least one task')
         return tasks
 
     def validate_input_minid(self, minid):
@@ -80,7 +90,7 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
         metadata = validated_data['metadata']
         tasks = validated_data['tasks']
         wname = '{} Topmed {}'.format(metadata['assignment'], metadata['seq'])
-        workspace = Workflow(name=wname, user=user,
+        workspace = Workspace(name=wname, user=user,
                             metadata=metadata)
         workspace.save()
         try:
@@ -98,6 +108,9 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
             tsk = Task(workspace=workspace, user=user, category=t,
                        status=TASK_WAITING, name=TASK_METADATA[t])
             tsk.save()
+        if validated_data.get('autostart') is True:
+            workspace.current_task.start()
+            workspace.refresh_from_db()
         return workspace
 
 
