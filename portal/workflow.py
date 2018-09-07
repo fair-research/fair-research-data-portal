@@ -31,6 +31,18 @@ TASK_TASK_NAMES = {
     TASK_WES: 'WES'
 }
 
+TASK_METADATA = {
+    TASK_JUPYTERHUB: {
+        'name': 'Jupyterhub',
+        'description': 'Transfer to Jupyterhub'
+    },
+    TASK_WES: {
+        'name': 'WES',
+        'description': 'Globus Genomics'
+    }
+
+}
+
 TASK_STATUS_NAMES = {
     TASK_WAITING: 'Waiting',
     TASK_READY: 'Ready',

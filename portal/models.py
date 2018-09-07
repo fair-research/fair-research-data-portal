@@ -44,6 +44,10 @@ class Workflow(models.Model):
         return Task.objects.filter(workflow=self).order_by('id')
 
     @property
+    def status(self):
+        return self.current_task.status
+
+    @property
     def current_task(self):
         tasks = list(self.tasks)
 

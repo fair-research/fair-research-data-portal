@@ -28,27 +28,16 @@ def add_minid(user, minid):
     if old_minid:
         return old_minid
 
-    if len(minid) > len('ark:/57799/b9jx3g'):
-        r = requests.get('{}{}'.format(IDENTIFIERS_URL, minid))
-        minid_data = r.json()
-        #minid = ic.get_identifier('ark:/99999/fk418y9nLR6Gat7F').data
-        #r = minid_client_api.get_entities(MINID_SERVER, minid, False)
-        # if not r.get(minid):
-        #     raise ValueError('Could not find Minid: {}'.format(minid))
-        log.debug(minid_data)
-        t = (minid_data['metadata'].get('title') or
-             minid_data['metadata'].get('Title') or
-             minid_data['identifier'])
-    else:
-        r = minid_client_api.get_entities(MINID_SERVER, minid, False)
-        if not r.get(minid):
-            raise ValueError('Could not find Minid: {}'.format(minid))
+    r = requests.get('{}{}'.format(IDENTIFIERS_URL, minid))
+    minid_data = r.json()
+    if not minid_data.get('identifier'):
 
-        t = r[minid].get('titles')
-        if t:
-            t = t[0]['title']
-        else:
-            t = r.get('creator')
+        message = minid_data.get('message') or 'Unable to get Minid'
+        raise ValueError(message)
+    log.debug(minid_data)
+    t = (minid_data['metadata'].get('title') or
+         minid_data['metadata'].get('Title') or
+         minid_data['identifier'])
     new_minid = Minid(id=minid, category=MINID_BDBAG, description=t)
     new_minid.save()
     new_minid.users.add(user)
