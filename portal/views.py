@@ -20,7 +20,7 @@ from globus_portal_framework import post_search, load_globus_access_token
 
 from concierge.api import bag_create
 
-from portal.models import Task, Workflow, Profile
+from portal.models import Task, Workspace, Profile
 from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
                              TASK_JUPYTERHUB, TASK_READY,
                              TASK_WAITING, TASK_RUNNING, TASK_WES)
@@ -75,7 +75,7 @@ def collect_minids(request):
         for record in records:
             wname = '{} Topmed {}'.format(record['assignment'], record['seq'])
 
-            workflow = Workflow(name=wname, user=request.user, metadata=record)
+            workflow = Workspace(name=wname, user=request.user, metadata=record)
             workflow.save()
 
             minid = add_minid(request.user, record['minid'])
@@ -221,7 +221,7 @@ def profile(request):
 @login_required
 def workflow_delete(request):
     if request.method == 'POST':
-        w = Workflow.objects.filter(id=request.POST.get('id'),
+        w = Workspace.objects.filter(id=request.POST.get('id'),
                                     user=request.user).first()
         if w:
             for t in w.tasks:
@@ -283,7 +283,7 @@ def workflows(request):
             p = Profile.objects.filter(user=request.user).first()
             if not p:
                 return redirect('profile')
-            workflow = Workflow(user=request.user, name='Workflow with {}'
+            workflow = Workspace(user=request.user, name='Workspace with {}'
                                 ''.format(minid.description))
             workflow.save()
             gg = Task(name='Globus Genomics',
@@ -302,7 +302,7 @@ def workflows(request):
             j.save()
 
     grouped_wfs = {}
-    for w in Workflow.objects.filter(user=request.user):
+    for w in Workspace.objects.filter(user=request.user):
         group = w.metadata.get('assignment', 'ungrouped')
         gwfs = grouped_wfs.get(group, [])
         gwfs.append(w)

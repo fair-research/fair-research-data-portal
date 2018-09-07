@@ -2,7 +2,7 @@ import logging
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from globus_portal_framework.search.models import Minid
-from portal.models import Workflow, Task
+from portal.models import Workspace, Task
 from portal.workflow import (TASK_TASK_NAMES, TASK_WES, TASK_METADATA,
                              TASK_READY, TASK_WAITING)
 from portal.minid import add_minid
@@ -22,19 +22,19 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     output = MinidSerializer(many=True, read_only=True)
     category = serializers.CharField(read_only=True)
     data = serializers.JSONField(read_only=True)
-    workflow = serializers.HyperlinkedRelatedField(read_only=True,
-                                                   view_name='workflow-detail')
+    workspace = serializers.HyperlinkedRelatedField(read_only=True,
+                                                   view_name='workspace-detail')
 
     class Meta:
         model = Task
-        fields = ('id', 'url', 'category', 'workflow', 'data', 'input',
+        fields = ('id', 'url', 'category', 'workspace', 'data', 'input',
                   'output')
 
 
 class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = Workflow
+        model = Workspace
         fields = ('metadata', 'input_minid', 'tasks')
 
     task_type_h = ('Tasks to add to this workspace, as a JSON List. Example: '
@@ -80,25 +80,25 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
         metadata = validated_data['metadata']
         tasks = validated_data['tasks']
         wname = '{} Topmed {}'.format(metadata['assignment'], metadata['seq'])
-        workflow = Workflow(name=wname, user=user,
+        workspace = Workflow(name=wname, user=user,
                             metadata=metadata)
-        workflow.save()
+        workspace.save()
         try:
             minid = add_minid(user, validated_data['input_minid'])
         except ValueError as ve:
             log.debug(ve)
             raise ValidationError(str(ve))
-        first_task = Task(workflow=workflow, user=user,
+        first_task = Task(workspace=workspace, user=user,
                           category=tasks[0], status=TASK_READY,
                           name=TASK_METADATA[tasks[0]])
         first_task.save()
         first_task.input.add(minid)
 
         for t in tasks[1:]:
-            tsk = Task(workflow=workflow, user=user, category=t,
+            tsk = Task(workspace=workspace, user=user, category=t,
                        status=TASK_WAITING, name=TASK_METADATA[t])
             tsk.save()
-        return workflow
+        return workspace
 
 
 class WorkspaceSerializer(serializers.HyperlinkedModelSerializer):
@@ -110,7 +110,7 @@ class WorkspaceSerializer(serializers.HyperlinkedModelSerializer):
     metadata = serializers.JSONField(help_text=metadata_h)
 
     class Meta:
-        model = Workflow
+        model = Workspace
         fields = ('id', 'url', 'date_added', 'metadata', 'current_task',
                   'status', 'tasks')
 

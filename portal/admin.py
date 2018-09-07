@@ -2,19 +2,19 @@ from django.contrib import admin
 
 from globus_portal_framework.search.models import Minid
 
-from portal.models import Task, Workflow, Profile
+from portal.models import Task, Workspace, Profile
 
 
-@admin.register(Workflow)
-class WorkflowAdmin(admin.ModelAdmin):
+@admin.register(Workspace)
+class WorkspaceAdmin(admin.ModelAdmin):
     list_display = ('name', 'user', 'date_added')
 
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('name', 'get_workflow', 'status', 'user')
+    list_display = ('name', 'get_workspace', 'status', 'user')
 
-    def get_workflow(self, obj):
+    def get_workspace(self, obj):
         return obj.workflow.name
 
 

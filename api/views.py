@@ -5,7 +5,7 @@ from api.serializers import (WorkspaceCreateSerializer,
                              TaskSerializer,
                              MinidSerializer)
 from api.permissions import IsOwner
-from portal.models import Workflow, Task
+from portal.models import Workspace, Task
 from globus_portal_framework.search.models import Minid
 
 
@@ -18,7 +18,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
     as inputs for the next task in the list. Tasks are ordered by id one after
     the other, the order cannot be changed after a task has been created.
     """
-    queryset = Workflow.objects.all()
+    queryset = Workspace.objects.all()
     serializer_class = WorkspaceSerializer
     permission_classes = (IsOwner,)
 
@@ -31,7 +31,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 
 
     def get_queryset(self):
-        return Workflow.objects.filter(user=self.request.user)
+        return Workspace.objects.filter(user=self.request.user)
 
 
 class TaskViewSet(viewsets.ModelViewSet):

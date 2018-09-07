@@ -25,7 +25,7 @@ class Profile(models.Model):
     minid_email = models.CharField(max_length=128, blank=True)
 
 
-class Workflow(models.Model):
+class Workspace(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     date_added = models.DateField(auto_now_add=True)
@@ -41,7 +41,7 @@ class Workflow(models.Model):
 
     @property
     def tasks(self):
-        return Task.objects.filter(workflow=self).order_by('id')
+        return Task.objects.filter(workspace=self).order_by('id')
 
     @property
     def status(self):
@@ -73,7 +73,7 @@ class Workflow(models.Model):
 
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     input = models.ManyToManyField(Minid, related_name='minid_input',
                                    blank=True)
     output = models.ManyToManyField(Minid, related_name='minid_output',

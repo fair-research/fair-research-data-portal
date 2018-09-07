@@ -2,7 +2,7 @@ import json
 import logging
 from django.http import HttpResponse
 
-from portal.models import Task, Workflow
+from portal.models import Task
 from portal.workflow import (TASK_RUNNING, TASK_COMPLETE, TASK_READY, \
                              TASK_WAITING)
 
