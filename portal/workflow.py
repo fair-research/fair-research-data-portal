@@ -129,6 +129,7 @@ class Task:
 
 class WesTask(Task):
 
+    TIMEOUT = 5
     WES_API = settings.WES_API
     WORKFLOWS = 'workflows'
     SUBMISSION_JSON = {
@@ -172,7 +173,8 @@ class WesTask(Task):
                 payload = self.SUBMISSION_JSON.copy()
                 payload['workflow_params']['input_file']['path'] = input.id
                 log.debug('Start sent to {}'.format(url))
-                r = requests.post(url, headers=headers, json=payload)
+                r = requests.post(url, headers=headers, json=payload,
+                                  timeout=WesTask.TIMEOUT)
                 data['job_id'] = r.json()
 
                 self.data = data
@@ -192,6 +194,11 @@ class WesTask(Task):
                     log.debug(r.text)
                 except:
                     pass
+            except requests.exceptions.ConnectTimeout as ct:
+                log.error('User {} task timed out {}'.format(self.task.user,
+                                                             self.task.id))
+                self.status = TASK_ERROR
+
 
     def info(self):
         try:
