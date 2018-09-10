@@ -23,12 +23,12 @@
         </tr>
       </thead>
       <tbody>
-      {% for workflow in wf_group %}
+      {% for workspace in wf_group %}
         <tr>
           <td rowspan="2">
-            {{workflow.metadata.seq}}/{{workflow.metadata.nwdid}}
+            {{workspace.metadata.seq}}/{{workspace.metadata.nwdid}}
           </td>
-        {% for task in workflow.tasks %}
+        {% for task in workspace.tasks %}
           <td><a href="{% url 'task' task.id %}">{{task.display_category}}</a></td>
           <td>
             <div id="task-input-{{task.id}}">
@@ -52,9 +52,9 @@
                 <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
               </div>
               <div class="col-6">
-                <form method="post" action="{% url 'workflow-delete' %}">
+                <form method="post" action="{% url 'workspace-delete' %}">
                 {% csrf_token %}
-                <input type="hidden" id="{{workflow.id}}" name="id" value="{{workflow.id}}">
+                <input type="hidden" id="{{workspace.id}}" name="id" value="{{workspace.id}}">
                 <button type="submit" class="btn btn-secondary">
                     <i class="fa fa-trash "></i>
                 </button>
@@ -66,6 +66,7 @@
         </tr>
         {% endfor %}
       {% endfor %}
+      </tr>
       </tbody>
     </table>
   </div>

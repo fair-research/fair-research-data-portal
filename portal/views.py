@@ -75,19 +75,19 @@ def collect_minids(request):
         for record in records:
             wname = '{} Topmed {}'.format(record['assignment'], record['seq'])
 
-            workflow = Workspace(name=wname, user=request.user, metadata=record)
-            workflow.save()
+            workspace = Workspace(name=wname, user=request.user, metadata=record)
+            workspace.save()
 
             minid = add_minid(request.user, record['minid'])
             # if minid not in already_added:
             tname = 'Globus Genomics'
-            ggTask = Task(workflow=workflow, user=request.user,
+            ggTask = Task(workspace=workspace, user=request.user,
                            category=TASK_WES, status=TASK_READY,
                            name=tname)
 
             ggTask.save()
             ggTask.input.add(minid)
-            transferTask = Task(workflow=workflow, user=request.user,
+            transferTask = Task(workspace=workspace, user=request.user,
                            category=TASK_JUPYTERHUB, status=TASK_WAITING,
                            name='Transfer to Jupyterhub')
             transferTask.save()
@@ -183,7 +183,7 @@ def bag_add(request):
                 new_min.description))
             log.debug('User {} added a new bag {}'.format(request.user,
                                                           new_min))
-    return redirect('workflows')
+    return redirect('workspaces')
 
 
 @login_required
@@ -195,7 +195,7 @@ def bag_delete(request, minid):
     else:
         messages.warning(request, '{} does not appear to be a valid minid.')
         log.warning('{} tried to delete {}'.format(request.user, minid))
-    return redirect('workflows')
+    return redirect('workspaces')
 
 
 @login_required
@@ -219,7 +219,22 @@ def profile(request):
 
 
 @login_required
-def workflow_delete(request):
+def workspace_group_delete(request):
+    if request.method == 'DELETE':
+        group = request.POST.get('group')
+        if not group:
+            messages.error(request, 'No Group specified')
+        else:
+            workspaces = Workspace.objects.filter(user=request.user)
+            d_workspaces = [w.delete() for w in workspaces
+                            if w.metadata.get('assignment') == group]
+            messages.info(request, 'Deleted {} workspaces'
+                          ''.format(len(d_workspaces)))
+    return redirect('workspaces')
+
+
+@login_required
+def workspace_delete(request):
     if request.method == 'POST':
         w = Workspace.objects.filter(id=request.POST.get('id'),
                                     user=request.user).first()
@@ -229,7 +244,7 @@ def workflow_delete(request):
                     t.stop()
             w.delete()
             messages.info(request, 'Your workspace has been deleted')
-    return redirect('workflows')
+    return redirect('workspaces')
 
 
 @login_required
@@ -241,7 +256,7 @@ def task_delete(request):
             t.stop()
         t.delete()
         messages.info(request, 'Task has been deleted.')
-    return redirect('workflows')
+    return redirect('workspaces')
 
 
 @login_required
@@ -259,7 +274,7 @@ def tasks(request):
             messages.info(request, 'Started task: {}'.format(task.name))
     else:
         log.error(request.method)
-    return redirect('workflows')
+    return redirect('workspaces')
 
 
 @login_required
@@ -271,7 +286,7 @@ def task_detail(request, task):
 
 
 @login_required
-def workflows(request):
+def workspaces(request):
     if request.method == 'POST':
         input = request.POST.get('input-bag')
         minid = None
@@ -283,11 +298,11 @@ def workflows(request):
             p = Profile.objects.filter(user=request.user).first()
             if not p:
                 return redirect('profile')
-            workflow = Workspace(user=request.user, name='Workspace with {}'
+            workspace = Workspace(user=request.user, name='Workspace with {}'
                                 ''.format(minid.description))
-            workflow.save()
+            workspace.save()
             gg = Task(name='Globus Genomics',
-                      workflow=workflow,
+                      workspace=workspace,
                       user=request.user,
                       category=TASK_GLOBUS_GENOMICS,
                       status=TASK_READY)
@@ -295,7 +310,7 @@ def workflows(request):
             gg.save()
             gg.input.add(minid)
             j = Task(name='Jupyterhub',
-                     workflow=workflow,
+                     workspace=workspace,
                      user=request.user,
                      category=TASK_JUPYTERHUB,
                      status=TASK_WAITING)
@@ -311,8 +326,8 @@ def workflows(request):
     active_tasks = [{'id':t.id}
                     for t in Task.objects.filter(user=request.user)]
     context = {'bags': Minid.objects.filter(users=request.user),
-               'workflows': grouped_wfs,
+               'workspaces': grouped_wfs,
                'profile': Profile.objects.filter(user=request.user).first(),
                'active_tasks': json.dumps(active_tasks)
                }
-    return render(request, 'workflows.html', context)
+    return render(request, 'workspaces.html', context)

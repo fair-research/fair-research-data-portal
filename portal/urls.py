@@ -3,8 +3,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect
 
-from portal.views import (intro_page, landing_page, bag_create, workflows,
-                          tasks, bag_delete, bag_add, workflow_delete,
+from portal.views import (intro_page, landing_page, bag_create, workspaces,
+                          tasks, bag_delete, bag_add, workspace_delete,
                           profile, task_detail, collect_minids, task_delete)
 
 from portal.api import task_start, update_tasks
@@ -24,14 +24,14 @@ main_site = [
     path('api/v1/', include(apipatterns)),
     path('api/v1/', include(api_urlpatterns)),
     path('profile/', profile, name='profile'),
-    path('bags/', workflows, name='bag-list'),
-    path('workspaces/', workflows, name='workspaces'),
-    path('workflows/', lambda r: redirect(reverse('workspaces')),
-         name='workflows'),
+    path('bags/', workspaces, name='bag-list'),
+    path('workspaces/', workspaces, name='workspaces'),
+    path('workspaces/', lambda r: redirect(reverse('workspaces')),
+         name='workspaces'),
     path('bags/create/', bag_create, name='bag-create'),
     path('collect-minids', collect_minids, name='collect-minids'),
     # path('search/bags/create/', bag_create, name='bag-create'),
-    path('workflow/delete', workflow_delete, name='workflow-delete'),
+    path('workspace/delete', workspace_delete, name='workspace-delete'),
     path('task/<int:task>/', task_detail, name='task'),
     path('task', tasks, name='tasks'),
     path('task/delete', task_delete, name='task-delete'),
