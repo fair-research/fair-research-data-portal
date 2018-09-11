@@ -12,7 +12,7 @@
     {% optional_logout request user %}
   {% else %}
     <ul class="nav navbar-nav pull-right">
-      <li><a href="{% url 'login' %}globus?next=/api/v1/">Log in</a></li>
+      <li><a href="{% url 'login' %}globus?next=/{{server_url}}api/v1/">Log in</a></li>
     </ul>
   {% endif %}
 {% endblock %}
