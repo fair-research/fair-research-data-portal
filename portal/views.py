@@ -318,7 +318,7 @@ def workspaces(request):
 
     grouped_wfs = {}
     for w in Workspace.objects.filter(user=request.user):
-        group = w.metadata.get('assignment', 'ungrouped')
+        group = w.metadata.get('grouping', 'ungrouped')
         gwfs = grouped_wfs.get(group, [])
         gwfs.append(w)
         grouped_wfs[group] = gwfs

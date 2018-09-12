@@ -2,7 +2,8 @@
 
   {% if forloop.first %}
   <td rowspan="{{task_count}}">
-    {{workspace.metadata.seq}}/{{workspace.metadata.nwdid}}
+    {% if workspace.metadata.data_set %} {{workspace.metadata.data_set}} / {%endif %}
+    {{workspace.metadata.data_id}}
   </td>
   {% endif %}
 
