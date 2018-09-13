@@ -12,7 +12,7 @@ from api.urls import urlpatterns as api_urlpatterns
 
 apipatterns = [
     path('task/start/', task_start, name='task-start'),
-    path('tasks/update/', update_tasks, name='tasks-update'),
+    path('tasks/update/', update_tasks, name='old-tasks-update'),
     # path('tasks/active', get_running_tasks, name='tasks-active')
 ]
 

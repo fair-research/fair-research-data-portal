@@ -6,7 +6,7 @@
 {%block headextras%}
   <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
   <script>
-    var API_TASKS_UPDATE = "{% url 'tasks-update' %}";
+    var API_TASKS_UPDATE = "{% url 'old-tasks-update' %}";
     var API_TASK_START = "{% url 'task-start' %}";
     var active_tasks = {{active_tasks|safe}};
     var CSRF = '{% csrf_token %}';
