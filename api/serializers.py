@@ -46,7 +46,7 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
     input_minid_h = ('The minid that will serve as input for the first task '
                      'in the list.')
     metadata_h = ('A dictionary object about the workspace. Suggested you '
-                  'include: assignment, seq, nwdid')
+                  'include: "grouping", "data_id", "data_set"')
     autostart_h = 'Start first task on creation'
 
     workspace = serializers.HyperlinkedRelatedField(read_only=True,
