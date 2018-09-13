@@ -102,6 +102,7 @@ INSTALLED_APPS = [
     'mp_auth',
     'api',
     'rest_framework',
+    'django_filters',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'

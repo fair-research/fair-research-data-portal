@@ -22,14 +22,15 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     output = MinidSerializer(many=True, read_only=True)
     category = serializers.CharField(read_only=True)
     status = serializers.CharField(read_only=True)
+    current_status = serializers.CharField(read_only=True)
     data = serializers.JSONField(read_only=True)
     workspace = serializers.HyperlinkedRelatedField(read_only=True,
                                                    view_name='workspace-detail')
 
     class Meta:
         model = Task
-        fields = ('id', 'url', 'category', 'status', 'workspace', 'data',
-                  'input', 'output')
+        fields = ('id', 'url', 'category', 'status', 'current_status',
+                  'workspace', 'data', 'input', 'output')
 
 
 class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
