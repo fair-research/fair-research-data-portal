@@ -1,1 +1,8 @@
 django>=2.0.0
+djangorestframework==3.8.2
+django-filter==2.0.0
+python-social-auth==0.3.6
+globus_sdk==1.5.0
+mp-auth==0.1
+globus-identifier-client==0.1.0
+concierge-cli==0.2.0.dev0
