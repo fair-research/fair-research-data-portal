@@ -66,9 +66,9 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
         if metadata is None or not isinstance(metadata, dict):
             raise ValidationError("Wrong type, must be of type '{}'")
         defaults = {
-            'assignment': 'ungrouped',
-            'seq': 'unspecified',
-            'nwdid': ''
+            'grouping': 'ungrouped',
+            'data_id': 'unspecified',
+            'data_set': ''
         }
         defaults.update(metadata)
         return defaults
@@ -90,7 +90,7 @@ class WorkspaceCreateSerializer(serializers.HyperlinkedModelSerializer):
         user = self.context['request'].user
         metadata = validated_data['metadata']
         tasks = validated_data['tasks']
-        wname = '{} Topmed {}'.format(metadata['assignment'], metadata['seq'])
+        wname = ''
         workspace = Workspace(name=wname, user=user,
                             metadata=metadata)
         workspace.save()

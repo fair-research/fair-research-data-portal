@@ -49,6 +49,7 @@ ENTRY_SERVICE_VARS = {
     'remote_file_manifest': None,
     'Argon_GUID': 'minid',
 }
+DEFAULT_QUERY = '*'
 # def generate_fake_manifests(var):
 #     return [{
 #         'url': var['http://gtex.globuscs.info/meta/GTEx_v7.xsd#Forward_path'],
@@ -81,7 +82,7 @@ SOCIAL_AUTH_GLOBUS_SCOPE = [
 
 ALLOWED_HOSTS = []
 
-BAG_LIMIT = 50
+BAG_LIMIT = 100
 
 
 # Application definition

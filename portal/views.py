@@ -25,6 +25,7 @@ from portal.workflow import (TASK_TASK_NAMES, TASK_GLOBUS_GENOMICS,
                              TASK_JUPYTERHUB, TASK_READY,
                              TASK_WAITING, TASK_RUNNING, TASK_WES)
 from portal.minid import add_minid
+from api.serializers import WorkspaceCreateSerializer
 
 
 log = logging.getLogger(__name__)
@@ -61,39 +62,30 @@ def collect_minids(request):
                                         request.user, limit=settings.BAG_LIMIT)
         log.debug(context['search']['search_results'][0]['fields'].keys())
 
-        records = [
+        metadata = [
             {
             'minid': sr['fields']['Argon_GUID']['data'],
-            'assignment': sr['fields'].get('Assignment', {}).get('data') or
-                          'Downsampled',
-            'seq': sr['fields']['SEQ_CTR']['data'],
-            'nwdid': sr['fields']['NWD_ID']['data'],
+            'grouping': sr['fields'].get('Assignment', {}).get('data') or
+                        'Downsampled',
+            'data_set': sr['fields'].get('SEQ_CTR', {}).get('data') or '',
+            'data_id': sr['fields'].get('NWD_ID', {}).get('data') or
+                       sr['fields'].get('GTEX_ID', {}).get('data'),
             } for sr in context['search']['search_results']
               if sr['fields']['Argon_GUID']['data']
         ]
 
-        for record in records:
-            wname = '{} Topmed {}'.format(record['assignment'], record['seq'])
-
-            workspace = Workspace(name=wname, user=request.user, metadata=record)
-            workspace.save()
-
-            minid = add_minid(request.user, record['minid'])
-            # if minid not in already_added:
-            tname = 'Globus Genomics'
-            ggTask = Task(workspace=workspace, user=request.user,
-                           category=TASK_WES, status=TASK_READY,
-                           name=tname)
-
-            ggTask.save()
-            ggTask.input.add(minid)
-            transferTask = Task(workspace=workspace, user=request.user,
-                           category=TASK_JUPYTERHUB, status=TASK_WAITING,
-                           name='Transfer to Jupyterhub')
-            transferTask.save()
+        for meta in metadata:
+            w = WorkspaceCreateSerializer(context={'request': request})
+            minid = meta.pop('minid')
+            validated_metadata = {
+                'metadata': meta,
+                'input_minid': minid,
+                'tasks': ['WES', 'JUPYTERHUB']
+            }
+            w.create(validated_metadata)
 
         messages.info(request, '{} new workspace job{} added.'.format(
-                      len(records),'s' if len(records) > 1 else ''))
+                      len(metadata),'s' if len(metadata) > 1 else ''))
     return redirect('workspaces')
 
 

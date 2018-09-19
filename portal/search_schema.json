@@ -9,6 +9,9 @@
     "Assignment": {
       "field_title": "Assignment"
     },
+    "GTEX_ID": {
+      "field_title": "GTEX_ID"
+    },
     "NWD_ID": {
       "field_title": "NWD_ID"
     },
@@ -26,6 +29,12 @@
       "name": "Assignment",
       "type": "terms",
       "field_name": "Assignment",
+      "size": 10
+    },
+    {
+      "name": "Dataset",
+      "type": "terms",
+      "field_name": "Dataset",
       "size": 10
     },
     {
