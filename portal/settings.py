@@ -28,7 +28,7 @@ SECRET_KEY = 'use `openssl rand -hex 32` in local_settings.py in prod'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-WES_API = 'https://nihcommons.globusgenomics.org/wes/'
+WES_API = 'https://globusgenomics.fair-research.org/wes/'
 JUPYTERHUB_STAGING = '5b552e84-7ae7-11e8-9443-0a6d4e044368'
 CONCIERGE_SERVER = DEFAULT_CONCIERGE_SERVER
 
