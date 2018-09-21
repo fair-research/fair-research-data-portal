@@ -15,7 +15,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ('name', 'get_workspace', 'status', 'user')
 
     def get_workspace(self, obj):
-        return obj.workflow.name
+        return obj.workspace.name
 
 
 @admin.register(Profile)
