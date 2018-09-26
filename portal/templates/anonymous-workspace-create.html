@@ -1,0 +1,63 @@
+{%extends "base.html"%}
+{% load static %}
+
+{%block title%}Create Workspace{%endblock%}
+
+{%block headextras%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+{%endblock%}
+
+
+{%block body%}
+
+{%block detail_messages %}
+<div class="container my-3">
+    {%include "components/messages.html"%}
+</div>
+{%endblock%}
+
+
+<div class="row mt-5">
+  <div class="col"></div>
+
+  <div class="col-10">
+
+    <div class="card">
+        <div class="card-header">
+          <h2>Anonymous Workspace Creation</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="container">
+              <p>Post a workspace to this location as an anonymous user, and the portal will redirect the user
+              and create it once they are logged in. To see what to include for post data see the
+              <a href="{% url 'workspace-list' %}">Workspaces API</a>.</p>
+              <form method="post" action="{% url 'anonymous_create_workspace'%}">
+              <div class="form-group">
+                <label for="anon-workspace-metadata">Workspace Metadata</label>
+                <textarea name="metadata" class="form-control" id="anon-workspace-metadata" rows="3">
+                  {{temp_workspace.metadata}}
+                </textarea>
+                <div class="form-group">
+                  <label for="anon-workspace-minid">Input Minid</label>
+                  <input type="text" class="form-control" name="input_minid" id="anon-workspace-minid" value="{{temp_workspace.input_minid}}">
+                </div>
+                <label for="anon-workspace-tasks">Tasks</label>
+                <textarea name="tasks" class="form-control" id="anon-workspace-tasks" rows="3">
+                  {{temp_workspace.tasks}}
+                </textarea>
+              </div>
+                <input class="btn btn-primary" type="submit" value="Submit">
+
+              </form>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="col"></div>
+
+
+
+
+</div>
+{%endblock%}

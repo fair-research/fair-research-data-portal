@@ -5,6 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 import json
 from urllib.parse import urlparse
 
@@ -51,6 +52,39 @@ def landing_page(request):
 #
 #     context = {'profile': p}
 #     return render(request, 'profile.html', context)
+
+@csrf_exempt
+def anonymous_create_workspace(request):
+    context = {'temp_workspace': request.session.get('temp_workspace', {})}
+    if request.method == 'GET':
+        if not request.user.is_anonymous and context['temp_workspace']:
+            try:
+                wjson = {
+                    k: json.loads(v) if k in ['metadata', 'tasks'] else v
+                    for k, v in context['temp_workspace'].items()
+                }
+                w = WorkspaceCreateSerializer(context={'request': request},
+                                              data=wjson)
+                if w.is_valid():
+                    del request.session['temp_workspace']
+                    w.create(w.validated_data)
+                    messages.info(request, 'Your workspace has been created.')
+                    return redirect('workspaces')
+                messages.error(request, w.errors)
+            except Exception as e:
+                messages.error(request, str(e))
+        return render(request, 'anonymous-workspace-create.html', context)
+    elif request.method == 'POST':
+        request.session['temp_workspace'] = {
+            'metadata': request.POST.get('metadata'),
+            'input_minid': request.POST.get('input_minid'),
+            'tasks': request.POST.get('tasks')
+        }
+        this_url = reverse('anonymous_create_workspace')
+        url = '{}{}?next={}'.format(settings.SERVER_URL, settings.LOGIN_URL,
+                                    this_url)
+        return redirect(url)
+    return redirect('workspaces')
 
 
 @login_required

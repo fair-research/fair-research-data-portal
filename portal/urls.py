@@ -5,7 +5,8 @@ from django.shortcuts import redirect
 
 from portal.views import (intro_page, landing_page, bag_create, workspaces,
                           tasks, bag_delete, bag_add, workspace_delete,
-                          profile, task_detail, collect_minids, task_delete)
+                          profile, task_detail, collect_minids, task_delete,
+                          anonymous_create_workspace)
 
 from portal.api import task_start, update_tasks
 from api.urls import urlpatterns as api_urlpatterns
@@ -28,6 +29,8 @@ main_site = [
     path('workspaces/', workspaces, name='workspaces'),
     path('workspaces/', lambda r: redirect(reverse('workspaces')),
          name='workspaces'),
+    path('anonymous-workspace/', anonymous_create_workspace,
+         name='anonymous_create_workspace'),
     path('bags/create/', bag_create, name='bag-create'),
     path('collect-minids', collect_minids, name='collect-minids'),
     # path('search/bags/create/', bag_create, name='bag-create'),
