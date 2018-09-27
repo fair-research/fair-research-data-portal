@@ -83,6 +83,8 @@ def anonymous_create_workspace(request):
         this_url = reverse('anonymous_create_workspace')
         url = '{}{}?next={}'.format(settings.SERVER_URL, settings.LOGIN_URL,
                                     this_url)
+        if not url.startswith('/'):
+            url = '/{}'.format(url)
         return redirect(url)
     return redirect('workspaces')
 
