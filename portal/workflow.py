@@ -17,6 +17,8 @@ log = logging.getLogger(__name__)
 TASK_GLOBUS_GENOMICS = 'GLOBUS_GENOMICS'
 TASK_JUPYTERHUB = 'JUPYTERHUB'
 TASK_WES = 'WES'
+TASK_DERIVA = 'DERIVA'
+TASK_TEST = 'TEST'
 
 TASK_WAITING = 'WAITING'
 TASK_READY = 'READY'
@@ -28,7 +30,9 @@ TASK_ERROR = 'ERROR'
 TASK_TASK_NAMES = {
     # TASK_GLOBUS_GENOMICS: 'Globus Genomics',
     TASK_JUPYTERHUB: 'Jupyterhub',
-    TASK_WES: 'WES'
+    TASK_WES: 'WES',
+    TASK_TEST: 'Test',
+    TASK_DERIVA: 'Deriva',
 }
 
 TASK_METADATA = {
@@ -39,6 +43,14 @@ TASK_METADATA = {
     TASK_WES: {
         'name': 'WES',
         'description': 'Globus Genomics'
+    },
+    TASK_TEST: {
+        'name': 'Test',
+        'description': 'Test'
+    },
+    TASK_DERIVA: {
+        'name': 'Deriva',
+        'description': 'Deriva'
     }
 
 }
@@ -56,7 +68,9 @@ def resolve_task(task_model):
     CLASSES = {
         TASK_GLOBUS_GENOMICS: GlobusGenomicsTask,
         TASK_JUPYTERHUB: JupyterhubTask,
-        TASK_WES: WesTask
+        TASK_WES: WesTask,
+        TASK_TEST: TestTask,
+        TASK_DERIVA: DerivaTask,
     }
     return CLASSES[task_model.category](task_model)
 
@@ -336,6 +350,44 @@ class JupyterhubTask(Task):
             if update.get('status') == 'SUCCEEDED':
                 self.status = TASK_COMPLETE
                 self.task.output.add(self.task.input.all().first())
+
+    def stop(self):
+        pass
+
+    @property
+    def output_metadata(self):
+        if self.status == TASK_COMPLETE:
+            return {'type': 'link',
+                    'link': 'https://jupyterhub.fair-research.org',
+                    'title': 'Transfer Location'}
+
+
+class TestTask(Task):
+    CHECKS_TO_FINISH = 3
+
+    def start(self):
+        self.data = {'CHECKS': 0}
+        self.status = TASK_RUNNING
+
+    def info(self):
+        checks = self.data.get('CHECKS', 0)
+        if checks == self.CHECKS_TO_FINISH:
+            self.status = TASK_COMPLETE
+        checks += 1
+        self.data = {'CHECKS': checks}
+
+
+class DerivaTask(Task):
+
+    def start(self):
+        if self.status == TASK_READY:
+            token = load_globus_access_token(self.task.user,
+                'DERIVA')
+            input = self.task.input.all()
+            raise NotImplemented()
+
+    def info(self):
+        pass
 
     def stop(self):
         pass

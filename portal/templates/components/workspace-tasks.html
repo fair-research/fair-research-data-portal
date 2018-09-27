@@ -33,7 +33,9 @@
   <td rowspan="{{task_count}}">
     <div class="row">
       <div class="col-6">
-        <button id="task-button-{{task.id}}" type="button" onclick="start_task({{task.id}});" class="btn btn-primary" disabled>Start</button>
+        <button id="task-button-{{workspace.current_task.id}}" type="button"
+                onclick="start_task({{workspace.current_task.id}});"
+                class="btn btn-primary" disabled>Start</button>
       </div>
       <div class="col-6">
         <form method="post" action="{% url 'workspace-delete' %}">

@@ -2,6 +2,7 @@ import logging
 import json
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from globus_portal_framework.search.models import Minid
 
@@ -49,23 +50,34 @@ class Workspace(models.Model):
 
     @property
     def current_task(self):
+        cur_task, updated = self.update_task_list()
+        return cur_task
+
+    def update_task_list(self, check_running=False):
         tasks = list(self.tasks)
+        has_updated = False
 
         for task in tasks:
+            if check_running:
+                task.update()
             if task.status in [TASK_READY, TASK_RUNNING, TASK_ERROR]:
-                return task
-            if (task.status == TASK_COMPLETE and
-                tasks.index(task) + 1 == len(tasks)):
-                return task
-            else:
-                log.debug('Task {} completed, but is {} of {} so not active. '
-                          'Skipping...'.format(
-                    task.category, tasks.index(task) + 1, len(tasks)
-                ))
-                continue
+                return task, has_updated
+            if task.status == TASK_WAITING:
+                if settings.AUTO_START_NEXT_TASKS:
+                    task.start()
+                else:
+                    task.status = TASK_READY
+                task.save()
+                has_updated = True
+                return task, has_updated
+            if task.status == TASK_COMPLETE:
+                # Task is last in the list
+                if tasks.index(task) + 1 == len(tasks):
+                    return task, has_updated
 
         log.error('No task is active for workspace {} user {}'
                   ''.format(self.user, self))
+        return None, has_updated
 
     def __str__(self):
         return self.name

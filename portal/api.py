@@ -2,7 +2,7 @@ import json
 import logging
 from django.http import HttpResponse
 
-from portal.models import Task
+from portal.models import Task, Workspace
 from portal.workflow import (TASK_RUNNING, TASK_COMPLETE, TASK_READY, \
                              TASK_WAITING)
 
@@ -42,29 +42,7 @@ def task_start(request):
 
 
 def update_tasks(request):
-    tasks = Task.objects.filter(user=request.user)
-    for task in tasks:
-        task.update()
-
-    _ready_next_task(list(tasks))
-    return _task_list_response(tasks)
-
-
-def _ready_next_task(tasks):
-
-    for task in tasks:
-        if task.status == TASK_COMPLETE:
-            pos = tasks.index(task)
-            if pos < len(tasks) - 1:
-                next_task = tasks[pos+1]
-                if next_task.status == TASK_WAITING:
-                    next_task.status = TASK_READY
-                    output = task.output.all()
-                    if not output:
-                        log.error('Task {} has no output, cannot start next task'
-                                  ''.format(task))
-                    else:
-                        for out in output:
-                            next_task.input.add(out)
-                            log.debug('NEXT TASK OUTPUT HAS BEEN SET {}'.format(next_task))
-                    next_task.save()
+    for w in Workspace.objects.filter(user=request.user):
+        w.update_task_list(check_running=True)
+    # The frontend requires the last task too, so give it all of them.
+    return _task_list_response(Task.objects.filter(user=request.user))
