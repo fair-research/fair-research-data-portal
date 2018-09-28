@@ -449,6 +449,12 @@ class DerivaTask(Task):
     @property
     def output_metadata(self):
         if self.status == TASK_COMPLETE:
-            return {'type': 'link',
-                    'link': 'https://jupyterhub.fair-research.org',
-                    'title': 'Transfer Location'}
+            try:
+                rid = self.data['response'][0]['RID']
+                return {'type': 'link',
+                        'link': 'https://nih-commons.derivacloud.org'
+                                '/chaise/record/#1/public:Derived_Results/'
+                                'RID={}'.format(rid),
+                        'title': 'DERIVA'}
+            except:
+                pass
