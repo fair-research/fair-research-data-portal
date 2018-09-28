@@ -4,12 +4,14 @@ import requests
 from django.conf import settings
 from concierge.api import bag_stage
 import concierge
+from globus_sdk import AccessTokenAuthorizer
 
 from globus_portal_framework import (load_globus_access_token,
                                      load_transfer_client)
 
 from portal.globus_genomics import submit_job, check_status
 from portal.minid import add_minid
+from identifier_client.identifier_api import IdentifierClient
 
 log = logging.getLogger(__name__)
 
@@ -370,27 +372,79 @@ class TestTask(Task):
         self.status = TASK_RUNNING
 
     def info(self):
-        checks = self.data.get('CHECKS', 0)
-        if checks == self.CHECKS_TO_FINISH:
-            self.status = TASK_COMPLETE
-        checks += 1
-        self.data = {'CHECKS': checks}
+        if self.status == TASK_RUNNING:
+            checks = self.data.get('CHECKS', 0)
+            if checks == self.CHECKS_TO_FINISH:
+                self.status = TASK_COMPLETE
+                # Pass inputs to outputs
+                self.task.output.set(self.task.input.all())
+
+            checks += 1
+            self.data = {'CHECKS': checks}
 
 
 class DerivaTask(Task):
+    BASE_HEADERS = {'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer {}'}
+    URL = ('https://nih-commons.derivacloud.org/ermrest/catalog/1/entity/'
+          'public:Derived_Results')
 
     def start(self):
         if self.status == TASK_READY:
-            token = load_globus_access_token(self.task.user,
-                'DERIVA')
-            input = self.task.input.all()
-            raise NotImplemented()
+            input_minids = self.task.input.all()
+            ic = self.get_identifier_client()
+            task_data = {}
+            payload = []
+            for minid in input_minids:
+                m_data = ic.get_identifier(minid.id).data
+                md5 = ''
+                for checksum in m_data['checksums']:
+                    if checksum['function'] == 'md5':
+                        md5 = checksum['value']
+                payload.append({
+                    'GTEX_ID': self.task.workspace.metadata['data_id'],
+                    'Minid': minid.id,
+                    'Description': minid.description,
+                    'MD5': md5,
+                    'Length': m_data['metadata']['contentSize']
+                })
+
+            headers = self.get_headers()
+            r = requests.post(self.URL, headers=headers, json=payload)
+            try:
+                r.raise_for_status()
+                task_data['response'] = r.json()
+                self.status = TASK_COMPLETE
+                self.task.output.set(self.task.input.all())
+            except requests.exceptions.HTTPError:
+                self.status = TASK_ERROR
+                task_data['error'] = r.json()
+            self.data = task_data
 
     def info(self):
         pass
 
     def stop(self):
         pass
+
+    def get_headers(self):
+        token = load_globus_access_token(self.task.user,
+                                         'nih_commons')
+        headers = self.BASE_HEADERS.copy()
+        headers['Authorization'] = headers['Authorization'].format(token)
+        return headers
+
+    def get_identifier_client(self):
+        token = load_globus_access_token(self.task.user,
+                                         'identifiers.globus.org')
+        # You must specify the `base_url`
+        ic = IdentifierClient('Identifier',
+                              base_url='https://identifiers.globus.org/',
+                              app_name='Workspace Manager',
+                              authorizer=AccessTokenAuthorizer(token)
+                              )
+        return ic
 
     @property
     def output_metadata(self):

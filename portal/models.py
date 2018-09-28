@@ -63,6 +63,8 @@ class Workspace(models.Model):
             if task.status in [TASK_READY, TASK_RUNNING, TASK_ERROR]:
                 return task, has_updated
             if task.status == TASK_WAITING:
+                if tasks.index(task) - 1 >= 0:
+                    task.input.set(tasks[tasks.index(task) - 1].output.all())
                 if settings.AUTO_START_NEXT_TASKS:
                     task.start()
                 else:
@@ -74,9 +76,6 @@ class Workspace(models.Model):
                 # Task is last in the list
                 if tasks.index(task) + 1 == len(tasks):
                     return task, has_updated
-
-        log.error('No task is active for workspace {} user {}'
-                  ''.format(self.user, self))
         return None, has_updated
 
     def __str__(self):
