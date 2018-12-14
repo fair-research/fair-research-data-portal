@@ -1,4 +1,4 @@
-django>=2.0.0
+django>=2.1.4
 djangorestframework==3.8.2
 django-filter==2.0.0
 python-social-auth==0.3.6
